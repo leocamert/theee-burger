@@ -211,8 +211,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppe
 .drink { text-align: center; }
 .drink__img { height: clamp(165px, 20vw, 260px); margin: 0 auto; filter: drop-shadow(0 22px 20px rgba(0,0,0,0.5)); transform-origin: bottom center; transform: scale(0.62); will-change: transform; }
 .drink__img img { height: 100%; width: auto; margin: 0 auto; }
-/* cola glass is short + wide; shrink it so it matches the tall shake glasses */
-.drink--cola .drink__img { height: clamp(116px, 13.6vw, 178px); }
+/* cola glass is short + wide; trim it slightly so it sits with the tall shake glasses */
+.drink--cola .drink__img { height: clamp(142px, 17.2vw, 224px); }
 .drink__name { font-family: var(--display); font-size: 19px; margin-top: 14px; letter-spacing: .02em; }
 .drink__price { color: var(--red); font-family: var(--display); font-size: 17px; margin-top: 2px; }
 @media (max-width: 520px) { .drinks { grid-template-columns: repeat(2, 1fr); gap: 24px; } }

@@ -42,7 +42,7 @@ import about from '../data/about.json';
     <img class="scene__bg" src={about.imageGrill} alt="" aria-hidden="true" />
     <div class="scene__shade shade-full"></div>
     <div class="container">
-      <div class="stats">
+      <div class="stats" style="text-align:center;">
         {about.stats.map((s, i) => (
           <div class={`reveal d${i + 1}`}>
             <div class="stat__value"><em>{s.value}</em></div>
