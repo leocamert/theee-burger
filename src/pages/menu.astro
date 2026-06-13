@@ -17,7 +17,7 @@ import menu from '../data/menu.json';
     <div class="container">
       <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Signature Burgers</h2>
       <div class="grid grid--3">
-        {menu.burgers.map((item) => <MenuCard item={item} />)}
+        {menu.burgers.map((item) => <MenuCard item={item} orderable={true} />)}
       </div>
     </div>
   </section>
@@ -26,38 +26,83 @@ import menu from '../data/menu.json';
     <div class="container">
       <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Sides</h2>
       <div class="grid grid--4">
-        {menu.sides.map((item) => <MenuCard item={item} />)}
+        {menu.sides.map((item) => <MenuCard item={item} orderable={true} />)}
       </div>
     </div>
   </section>
 
-  <section class="section--tight scene">
-    <img class="scene__bg" src="/images/home-smoke.jpg" alt="" aria-hidden="true" style="opacity:.45;" />
+  <section class="section--tight scene drinks-section">
+    <img class="scene__bg anim" src="/images/home-smoke.jpg" alt="" aria-hidden="true" style="opacity:.5;" />
     <div class="scene__shade shade-full"></div>
     <div class="container">
       <h2 class="cat-label" style="font-size:18px; margin-bottom:28px;">Shakes & Lemonade</h2>
       <div class="drinks">
-        {menu.drinks.map((d, i) => (
-          <div class={`drink reveal d${(i % 3) + 1}`}>
+        {menu.drinks.map((d) => (
+          <div class="drink reveal">
             <div class="drink__img"><img src={d.image} alt={d.name} loading="lazy" /></div>
             <div class="drink__name">{d.name}</div>
             <div class="drink__price">${d.price.toFixed(2)}</div>
+            <div class="cart-stepper" data-id={d.id} data-name={d.name} data-price={d.price}>
+              <button type="button" class="cdec" aria-label={`Remove one ${d.name}`} disabled>&minus;</button>
+              <span class="cqty">0</span>
+              <button type="button" class="cinc" aria-label={`Add one ${d.name}`}>+</button>
+            </div>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section--tight">
+  <section class="section--tight" style="padding-bottom:120px;">
     <div class="container">
       <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Dessert</h2>
       <div class="grid grid--3">
-        {menu.desserts.map((item) => <MenuCard item={item} />)}
-      </div>
-      <div class="btn-row reveal" style="margin-top:46px;">
-        <a href="/order" class="btn btn--red">Order to your table</a>
+        {menu.desserts.map((item) => <MenuCard item={item} orderable={true} />)}
       </div>
     </div>
   </section>
 
-</Base>
+  <a class="cartbar" id="cartbar" href="/order">
+    <span class="cartbar__info"><span id="cartCount">0 items</span><span class="cartbar__dot">·</span><span id="cartTotal">$0.00</span></span>
+    <span class="cartbar__cta">Review &amp; send <span aria-hidden="true">&rarr;</span></span>
+  </a>
+
+<script>
+  const KEY = 'tb_cart';
+  const read = () => { try { return JSON.parse(sessionStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
+  const write = (c: Record<string, number>) => sessionStorage.setItem(KEY, JSON.stringify(c));
+
+  const steppers = Array.from(document.querySelectorAll('.cart-stepper')) as HTMLElement[];
+  const bar = document.getElementById('cartbar')!;
+  const countEl = document.getElementById('cartCount')!;
+  const totalEl = document.getElementById('cartTotal')!;
+  const priceById: Record<string, number> = {};
+  steppers.forEach((s) => { priceById[s.dataset.id!] = parseFloat(s.dataset.price!); });
+  let cart = read();
+
+  function sync() {
+    for (const s of steppers) {
+      const id = s.dataset.id!;
+      const n = cart[id] || 0;
+      s.querySelector('.cqty')!.textContent = String(n);
+      (s.querySelector('.cdec') as HTMLButtonElement).disabled = n === 0;
+      s.classList.toggle('has', n > 0);
+    }
+    let count = 0, total = 0;
+    for (const id in cart) { const n = cart[id] || 0; if (n > 0) { count += n; total += n * (priceById[id] || 0); } }
+    if (count > 0) {
+      bar.classList.add('show');
+      countEl.textContent = count + (count === 1 ? ' item' : ' items');
+      totalEl.textContent = '$' + total.toFixed(2);
+    } else {
+      bar.classList.remove('show');
+    }
+  }
+
+  for (const s of steppers) {
+    const id = s.dataset.id!;
+    s.querySelector('.cinc')!.addEventListener('click', () => { cart[id] = Math.min(99, (cart[id] || 0) + 1); write(cart); sync(); });
+    s.querySelector('.cdec')!.addEventListener('click', () => { cart[id] = Math.max(0, (cart[id] || 0) - 1); if (!cart[id]) delete cart[id]; write(cart); sync(); });
+  }
+  sync();
+</script>

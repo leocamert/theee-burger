@@ -10,6 +10,6 @@
   "nav": [
     { "label": "Menu", "href": "/menu" },
     { "label": "About", "href": "/about" },
-    { "label": "Locations", "href": "/locations" }
+    { "label": "Location", "href": "/locations" }
   ]
 }

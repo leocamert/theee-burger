@@ -20,11 +20,11 @@ import about from '../data/about.json';
 
   <section class="section">
     <div class="container">
-      <div class="split">
-        <div class="reveal">
+      <div class="split split--story">
+        <div class="split__media reveal"><img src={about.imageIngredients} alt="Fresh burger ingredients" loading="lazy" /></div>
+        <div class="reveal d1">
           {about.paragraphs.map((p) => <p style="margin-bottom:20px; font-size:18px;" class="muted">{p}</p>)}
         </div>
-        <div class="split__media reveal d1"><img src={about.imageIngredients} alt="Fresh burger ingredients" loading="lazy" /></div>
       </div>
     </div>
   </section>

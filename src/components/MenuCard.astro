@@ -1,6 +1,6 @@
 ---
-interface Item { name: string; price: number; desc: string; image: string; tag?: string; }
-const { item } = Astro.props as { item: Item };
+interface Item { id?: string; name: string; price: number; desc: string; image: string; tag?: string; }
+const { item, orderable = false } = Astro.props as { item: Item; orderable?: boolean };
 ---
 <article class="card reveal">
   <div class="card__media"><img src={item.image} alt={item.name} loading="lazy" /></div>
@@ -11,5 +11,12 @@ const { item } = Astro.props as { item: Item };
     </div>
     <p class="card__desc">{item.desc}</p>
     {item.tag && <span class="card__tag">{item.tag}</span>}
+    {orderable && item.id && (
+      <div class="cart-stepper" data-id={item.id} data-name={item.name} data-price={item.price}>
+        <button type="button" class="cdec" aria-label={`Remove one ${item.name}`} disabled>&minus;</button>
+        <span class="cqty">0</span>
+        <button type="button" class="cinc" aria-label={`Add one ${item.name}`}>+</button>
+      </div>
+    )}
   </div>
 </article>

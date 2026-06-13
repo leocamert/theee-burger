@@ -37,22 +37,32 @@ const { title = 'THEEE BURGER', description = 'Flame-grilled, hand-pressed burge
       }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
       document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-      // Subtle parallax on scene backgrounds
-      const bgs = Array.from(document.querySelectorAll('.scene__bg')) as HTMLElement[];
-      function parallax() {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Parallax on static scene backgrounds (animated smoke is excluded via :not(.anim))
+      const bgs = Array.from(document.querySelectorAll('.scene__bg:not(.anim)')) as HTMLElement[];
+      // Drinks scale UP as they scroll into view
+      const drinks = Array.from(document.querySelectorAll('.drink__img')) as HTMLElement[];
+
+      function frame() {
         const vh = window.innerHeight;
         for (const bg of bgs) {
           const parent = bg.parentElement as HTMLElement;
           const r = parent.getBoundingClientRect();
-          const center = r.top + r.height / 2;
-          const off = (center - vh / 2) / vh;
+          const off = ((r.top + r.height / 2) - vh / 2) / vh;
           bg.style.transform = `translateY(${(off * -42).toFixed(1)}px)`;
         }
+        for (const el of drinks) {
+          const r = el.getBoundingClientRect();
+          const c = r.top + r.height / 2;
+          let t = (vh - c) / (vh * 0.55);
+          t = Math.max(0, Math.min(1, t));
+          el.style.transform = `scale(${(0.62 + 0.38 * t).toFixed(3)})`;
+        }
       }
-      if (bgs.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        window.addEventListener('scroll', () => requestAnimationFrame(parallax), { passive: true });
-        window.addEventListener('resize', parallax);
-        parallax();
+      if (!reduce && (bgs.length || drinks.length)) {
+        window.addEventListener('scroll', () => requestAnimationFrame(frame), { passive: true });
+        window.addEventListener('resize', frame);
+        frame();
       }
     </script>
   </body>

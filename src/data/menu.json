@@ -3,26 +3,26 @@
   "title": "The menu",
   "intro": "Prices include everything but the napkins you'll need. Dine-in, San Jose.",
   "burgers": [
-    { "name": "The Classic", "price": 14.5, "desc": "Double flame-grilled patties, American cheese, lettuce, tomato, house sauce, toasted brioche.", "image": "/images/burger-classic.jpg", "tag": "Most loved" },
-    { "name": "Bacon Stack", "price": 16.5, "desc": "Double patty, candied bacon, smoked cheddar, crispy onions, BBQ aioli.", "image": "/images/burger-bacon.jpg", "tag": "" },
-    { "name": "Spicy Inferno", "price": 15.5, "desc": "Pepper jack, jalapeños, chipotle mayo, and a patty that bites back.", "image": "/images/burger-spicy.jpg", "tag": "Bring water" },
-    { "name": "Mushroom Swiss", "price": 15.5, "desc": "Wild mushrooms, melted Swiss, garlic aioli, caramelized onions.", "image": "/images/burger-mushroom.jpg", "tag": "" },
-    { "name": "Crispy Chicken", "price": 14.5, "desc": "Buttermilk-fried chicken, pickles, slaw, and honey-hot drizzle.", "image": "/images/burger-chicken.jpg", "tag": "" },
-    { "name": "The Garden", "price": 14.0, "desc": "Char-grilled plant patty, avocado, lettuce, tomato, vegan aioli.", "image": "/images/burger-garden.jpg", "tag": "Plant-based" }
+    { "id": "classic", "name": "The Classic", "price": 22.0, "desc": "Double flame-grilled patties, American cheese, lettuce, tomato, house sauce, toasted brioche.", "image": "/images/burger-classic.jpg", "tag": "Most loved" },
+    { "id": "bacon", "name": "Bacon Stack", "price": 25.0, "desc": "Double patty, candied bacon, smoked cheddar, crispy onions, BBQ aioli.", "image": "/images/burger-bacon.jpg", "tag": "" },
+    { "id": "spicy", "name": "Spicy Inferno", "price": 23.5, "desc": "Pepper jack, jalapeños, chipotle mayo, and a patty that bites back.", "image": "/images/burger-spicy.jpg", "tag": "Bring water" },
+    { "id": "mushroom", "name": "Mushroom Swiss", "price": 23.0, "desc": "Wild mushrooms, melted Swiss, garlic aioli, caramelized onions.", "image": "/images/burger-mushroom.jpg", "tag": "" },
+    { "id": "chicken", "name": "Crispy Chicken", "price": 22.0, "desc": "Buttermilk-fried chicken, pickles, slaw, and honey-hot drizzle.", "image": "/images/burger-chicken.jpg", "tag": "" },
+    { "id": "garden", "name": "The Garden", "price": 22.0, "desc": "Char-grilled plant patty, avocado, lettuce, tomato, vegan aioli.", "image": "/images/burger-garden.jpg", "tag": "Plant-based" }
   ],
   "sides": [
-    { "name": "Fries", "price": 5.0, "desc": "Golden, sea-salted, fried twice.", "image": "/images/side-fries.jpg" },
-    { "name": "Cheese Fries", "price": 8.5, "desc": "Loaded with molten cheddar.", "image": "/images/side-cheese-fries.jpg" },
-    { "name": "Onion Rings", "price": 7.0, "desc": "Thick-cut, beer-battered, with dip.", "image": "/images/side-onion-rings.jpg" },
-    { "name": "Chicken Tenders", "price": 9.5, "desc": "Hand-breaded, two house sauces.", "image": "/images/side-tenders.jpg" }
+    { "id": "fries", "name": "Fries", "price": 5.0, "desc": "Golden, sea-salted, fried twice.", "image": "/images/side-fries.jpg" },
+    { "id": "cheese-fries", "name": "Cheese Fries", "price": 8.5, "desc": "Loaded with molten cheddar.", "image": "/images/side-cheese-fries.jpg" },
+    { "id": "onion-rings", "name": "Onion Rings", "price": 7.0, "desc": "Thick-cut, beer-battered, with dip.", "image": "/images/side-onion-rings.jpg" },
+    { "id": "tenders", "name": "Chicken Tenders", "price": 9.5, "desc": "Hand-breaded, two house sauces.", "image": "/images/side-tenders.jpg" }
   ],
   "drinks": [
-    { "name": "Lemonade", "price": 4.5, "desc": "Fresh-squeezed with mint.", "image": "/images/drink-lemonade.png" },
-    { "name": "Chocolate Shake", "price": 7.0, "desc": "Hand-spun, deep cocoa.", "image": "/images/drink-chocolate.png" },
-    { "name": "Strawberry Shake", "price": 7.0, "desc": "Real strawberries, real thick.", "image": "/images/drink-strawberry.png" },
-    { "name": "Vanilla Shake", "price": 7.0, "desc": "Madagascar vanilla, caramel drizzle.", "image": "/images/drink-vanilla.png" }
+    { "id": "lemonade", "name": "Lemonade", "price": 4.5, "desc": "Fresh-squeezed with mint.", "image": "/images/drink-lemonade.png" },
+    { "id": "chocolate", "name": "Chocolate Shake", "price": 7.0, "desc": "Hand-spun, deep cocoa.", "image": "/images/drink-chocolate.png" },
+    { "id": "strawberry", "name": "Strawberry Shake", "price": 7.0, "desc": "Real strawberries, real thick.", "image": "/images/drink-strawberry.png" },
+    { "id": "vanilla", "name": "Vanilla Shake", "price": 7.0, "desc": "Madagascar vanilla, caramel drizzle.", "image": "/images/drink-vanilla.png" }
   ],
   "desserts": [
-    { "name": "Brownie Sundae", "price": 8.0, "desc": "Warm brownie, vanilla ice cream, caramel, candied pecans.", "image": "/images/dessert-brownie.jpg" }
+    { "id": "brownie", "name": "Brownie Sundae", "price": 8.0, "desc": "Warm brownie, vanilla ice cream, caramel, candied pecans.", "image": "/images/dessert-brownie.jpg" }
   ]
 }

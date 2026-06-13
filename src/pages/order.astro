@@ -94,6 +94,16 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
   const qty: Record<string, number> = {};
   const fmt = (n: number) => '$' + n.toFixed(2);
 
+  // Shared cart from the Menu page
+  const KEY = 'tb_cart';
+  let saved: Record<string, number> = {};
+  try { saved = JSON.parse(sessionStorage.getItem(KEY) || '{}'); } catch (e) { saved = {}; }
+  const persist = () => {
+    const out: Record<string, number> = {};
+    for (const k in qty) if (qty[k] > 0) out[k] = qty[k];
+    sessionStorage.setItem(KEY, JSON.stringify(out));
+  };
+
   function refresh() {
     let total = 0;
     const lines: string[] = [];
@@ -116,9 +126,9 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
 
   for (const row of items) {
     const id = row.dataset.id!;
-    qty[id] = 0;
-    row.querySelector('.inc')!.addEventListener('click', () => { qty[id] = Math.min(99, (qty[id] || 0) + 1); refresh(); });
-    row.querySelector('.dec')!.addEventListener('click', () => { qty[id] = Math.max(0, (qty[id] || 0) - 1); refresh(); });
+    qty[id] = saved[id] || 0;
+    row.querySelector('.inc')!.addEventListener('click', () => { qty[id] = Math.min(99, (qty[id] || 0) + 1); refresh(); persist(); });
+    row.querySelector('.dec')!.addEventListener('click', () => { qty[id] = Math.max(0, (qty[id] || 0) - 1); refresh(); persist(); });
   }
 
   function validateField(el: HTMLInputElement) {
@@ -145,6 +155,7 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
     modal.classList.remove('show');
     for (const k in qty) qty[k] = 0;
     customer.value = ''; table.value = '';
+    sessionStorage.removeItem(KEY);
     refresh();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });

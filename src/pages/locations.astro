@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import loc from '../data/locations.json';
 const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(loc.mapQuery)}&z=15&output=embed`;
 ---
-<Base title="Locations — THEEE BURGER" description="Find THEEE BURGER in San Pedro Square, Downtown San Jose. Walk in and order from your table.">
+<Base title="Location — THEEE BURGER" description="Find THEEE BURGER in San Pedro Square, Downtown San Jose. Walk in and order from your table.">
 
   <header class="page-hero">
     <div class="container">
@@ -49,14 +49,10 @@ const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(loc.mapQuery
     </div>
   </section>
 
-  <!-- Interior + kitchen -->
+  <!-- Interior + kitchen (full-bleed, large) -->
   <section class="section--tight">
-    <div class="container">
-      <div class="grid grid--2">
-        <div class="split__media reveal"><img src="/images/loc-interior.jpg" alt="Inside the restaurant" loading="lazy" /></div>
-        <div class="split__media reveal d1"><img src="/images/loc-kitchen.jpg" alt="Open kitchen and grill" loading="lazy" /></div>
-      </div>
-    </div>
+    <div class="bigshot reveal"><img src="/images/loc-interior.jpg" alt="Inside the restaurant" loading="lazy" /></div>
+    <div class="bigshot reveal d1"><img src="/images/loc-kitchen.jpg" alt="Open kitchen and grill" loading="lazy" /></div>
   </section>
 
 </Base>
