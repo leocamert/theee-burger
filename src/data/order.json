@@ -20,6 +20,7 @@
     { "id": "cheese-fries", "name": "Cheese Fries", "price": 8.5, "category": "Sides" },
     { "id": "onion-rings", "name": "Onion Rings", "price": 7.0, "category": "Sides" },
     { "id": "tenders", "name": "Chicken Tenders", "price": 9.5, "category": "Sides" },
+    { "id": "cola", "name": "Cola", "price": 3.95, "category": "Drinks" },
     { "id": "lemonade", "name": "Lemonade", "price": 4.5, "category": "Drinks" },
     { "id": "chocolate", "name": "Chocolate Shake", "price": 7.0, "category": "Drinks" },
     { "id": "strawberry", "name": "Strawberry Shake", "price": 7.0, "category": "Drinks" },

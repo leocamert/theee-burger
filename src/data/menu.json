@@ -17,6 +17,7 @@
     { "id": "tenders", "name": "Chicken Tenders", "price": 9.5, "desc": "Hand-breaded, two house sauces.", "image": "/images/side-tenders.jpg" }
   ],
   "drinks": [
+    { "id": "cola", "name": "Cola", "price": 3.95, "desc": "Ice-cold, over the rocks.", "image": "/images/drink-cola.png" },
     { "id": "lemonade", "name": "Lemonade", "price": 4.5, "desc": "Fresh-squeezed with mint.", "image": "/images/drink-lemonade.png" },
     { "id": "chocolate", "name": "Chocolate Shake", "price": 7.0, "desc": "Hand-spun, deep cocoa.", "image": "/images/drink-chocolate.png" },
     { "id": "strawberry", "name": "Strawberry Shake", "price": 7.0, "desc": "Real strawberries, real thick.", "image": "/images/drink-strawberry.png" },
