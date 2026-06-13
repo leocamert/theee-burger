@@ -232,6 +232,12 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppe
 .bigshot:first-child { margin-top: 0; }
 .bigshot img { width: 100%; height: 100%; object-fit: cover; }
 
+/* about — values stacked in the story column */
+.story-values { margin-top: 34px; display: flex; flex-direction: column; gap: 22px; }
+.story-value { border-top: 2px solid var(--red); padding-top: 16px; }
+.story-value h3 { font-size: 23px; }
+.story-value p { margin-top: 8px; font-size: 16px; }
+
 /* sauce drip divider */
 .drip { position: relative; height: 0; z-index: 6; pointer-events: none; }
 .drip img { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); width: min(290px, 46vw); opacity: .95; filter: drop-shadow(0 14px 18px rgba(0,0,0,0.5)); }

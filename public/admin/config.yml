@@ -91,6 +91,12 @@ collections:
             fields:
               - { label: Value, name: value, widget: string }
               - { label: Label, name: label, widget: string }
+          - { label: "More — eyebrow", name: moreEyebrow, widget: string }
+          - { label: "More — title", name: moreTitle, widget: string }
+          - label: "More — paragraphs"
+            name: moreText
+            widget: list
+            field: { label: Paragraph, name: paragraph, widget: text }
           - { label: "Quote", name: quote, widget: string }
           - { label: "Grill image", name: imageGrill, widget: image }
           - { label: "Chef image", name: imageChef, widget: image }

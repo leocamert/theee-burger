@@ -24,22 +24,25 @@ import about from '../data/about.json';
         <div class="split__media reveal"><img src={about.imageIngredients} alt="Fresh burger ingredients" loading="lazy" /></div>
         <div class="reveal d1">
           {about.paragraphs.map((p) => <p style="margin-bottom:20px; font-size:18px;" class="muted">{p}</p>)}
+          <div class="story-values">
+            {about.values.map((v) => (
+              <div class="story-value">
+                <h3>{v.title}</h3>
+                <p class="muted">{v.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Values -->
+  <!-- A little more -->
   <section class="section--tight">
-    <div class="container">
-      <div class="grid grid--3">
-        {about.values.map((v, i) => (
-          <div class={`reveal d${i + 1}`} style="border-top:2px solid var(--red); padding-top:22px;">
-            <h3 style="font-size:28px;">{v.title}</h3>
-            <p class="muted" style="margin-top:12px;">{v.text}</p>
-          </div>
-        ))}
-      </div>
+    <div class="container" style="max-width:780px;">
+      <span class="eyebrow reveal" style="display:block; margin-bottom:14px;">{about.moreEyebrow}</span>
+      <h2 class="section-title reveal" style="font-size:clamp(28px,4vw,48px);">{about.moreTitle}</h2>
+      {about.moreText.map((p, i) => <p class={`muted reveal d${i + 1}`} style="margin-top:18px; font-size:18px;">{p}</p>)}
     </div>
   </section>
 
