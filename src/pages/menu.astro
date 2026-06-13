@@ -38,7 +38,7 @@ import menu from '../data/menu.json';
       <h2 class="cat-label" style="font-size:18px; margin-bottom:28px;">Drinks & Shakes</h2>
       <div class="drinks">
         {menu.drinks.map((d) => (
-          <div class="drink reveal">
+          <div class={`drink reveal drink--${d.id}`}>
             <div class="drink__img"><img src={d.image} alt={d.name} loading="lazy" /></div>
             <div class="drink__name">{d.name}</div>
             <div class="drink__price">${d.price.toFixed(2)}</div>

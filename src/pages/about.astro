@@ -37,15 +37,6 @@ import about from '../data/about.json';
     </div>
   </section>
 
-  <!-- A little more -->
-  <section class="section--tight">
-    <div class="container" style="max-width:780px;">
-      <span class="eyebrow reveal" style="display:block; margin-bottom:14px;">{about.moreEyebrow}</span>
-      <h2 class="section-title reveal" style="font-size:clamp(28px,4vw,48px);">{about.moreTitle}</h2>
-      {about.moreText.map((p, i) => <p class={`muted reveal d${i + 1}`} style="margin-top:18px; font-size:18px;">{p}</p>)}
-    </div>
-  </section>
-
   <!-- Grill scene + stats -->
   <section class="section scene">
     <img class="scene__bg" src={about.imageGrill} alt="" aria-hidden="true" />

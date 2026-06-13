@@ -11,12 +11,6 @@
     { "title": "Never frozen", "text": "Fresh beef ground daily and produce we'd happily eat raw." },
     { "title": "Made to order", "text": "Nothing sits under a lamp. We build it when you ask for it." }
   ],
-  "moreEyebrow": "Why we're still here",
-  "moreTitle": "Still a neighborhood spot",
-  "moreText": [
-    "We've grown, but the rules haven't. Beef is ground in-house every morning, buns arrive fresh daily, and the charcoal grill that started it all is still the one we cook on.",
-    "Sourced from Bay Area farms whenever we can, built by a crew that actually eats here. Quick lunch or a Friday-night booth full of friends — you get the exact same burger we'd make for our own table."
-  ],
   "stats": [
     { "value": "2014", "label": "Founded in San Jose" },
     { "value": "1M+", "label": "Burgers flame-grilled" },
