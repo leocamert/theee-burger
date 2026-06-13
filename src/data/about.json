@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Since 2014",
+  "title": "Our story",
+  "lead": "It started in 2014 with one charcoal grill, a stubborn idea, and a corner spot in San Pedro Square.",
+  "paragraphs": [
+    "We thought a burger should taste like it was actually cooked over fire — because it was. So we hand-press every patty, sear it over an open flame, and build it on a brioche bun toasted to order. No heat lamps. No freezer shortcuts.",
+    "A decade later, not much has changed. Same grill philosophy, same fresh beef, same line out the door on a Friday night. We just added a few more stacks to the board — and a way to order straight from your table."
+  ],
+  "values": [
+    { "title": "Flame-grilled", "text": "Open flame, every patty, every time. It's where the flavor lives." },
+    { "title": "Never frozen", "text": "Fresh beef ground daily and produce we'd happily eat raw." },
+    { "title": "Made to order", "text": "Nothing sits under a lamp. We build it when you ask for it." }
+  ],
+  "stats": [
+    { "value": "2014", "label": "Founded in San Jose" },
+    { "value": "1M+", "label": "Burgers flame-grilled" },
+    { "value": "1", "label": "Grill we still swear by" }
+  ],
+  "quote": "Burger? Right here.",
+  "imageGrill": "/images/about-grill.jpg",
+  "imageChef": "/images/about-chef.jpg",
+  "imageIngredients": "/images/about-ingredients.jpg"
+}

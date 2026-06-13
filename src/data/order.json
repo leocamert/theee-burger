@@ -1,0 +1,29 @@
+{
+  "eyebrow": "Dine-in only",
+  "title": "Order to your table",
+  "intro": "Already seated? Build your order right here and we'll bring it straight out. No payment online — your check arrives with your food.",
+  "customerLabel": "Customer number",
+  "customerPlaceholder": "e.g. 0427",
+  "customerHelp": "Please enter the number you were given when you were seated.",
+  "tableLabel": "Table number",
+  "tablePlaceholder": "e.g. 12",
+  "submitLabel": "Send order to the kitchen",
+  "noPaymentNote": "No online payment — your check will be brought to your table.",
+  "items": [
+    { "id": "classic", "name": "The Classic", "price": 14.5, "category": "Burgers" },
+    { "id": "bacon", "name": "Bacon Stack", "price": 16.5, "category": "Burgers" },
+    { "id": "spicy", "name": "Spicy Inferno", "price": 15.5, "category": "Burgers" },
+    { "id": "mushroom", "name": "Mushroom Swiss", "price": 15.5, "category": "Burgers" },
+    { "id": "chicken", "name": "Crispy Chicken", "price": 14.5, "category": "Burgers" },
+    { "id": "garden", "name": "The Garden", "price": 14.0, "category": "Burgers" },
+    { "id": "fries", "name": "Fries", "price": 5.0, "category": "Sides" },
+    { "id": "cheese-fries", "name": "Cheese Fries", "price": 8.5, "category": "Sides" },
+    { "id": "onion-rings", "name": "Onion Rings", "price": 7.0, "category": "Sides" },
+    { "id": "tenders", "name": "Chicken Tenders", "price": 9.5, "category": "Sides" },
+    { "id": "lemonade", "name": "Lemonade", "price": 4.5, "category": "Drinks" },
+    { "id": "chocolate", "name": "Chocolate Shake", "price": 7.0, "category": "Drinks" },
+    { "id": "strawberry", "name": "Strawberry Shake", "price": 7.0, "category": "Drinks" },
+    { "id": "vanilla", "name": "Vanilla Shake", "price": 7.0, "category": "Drinks" },
+    { "id": "brownie", "name": "Brownie Sundae", "price": 8.0, "category": "Dessert" }
+  ]
+}

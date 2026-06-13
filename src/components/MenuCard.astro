@@ -1,0 +1,15 @@
+---
+interface Item { name: string; price: number; desc: string; image: string; tag?: string; }
+const { item } = Astro.props as { item: Item };
+---
+<article class="card reveal">
+  <div class="card__media"><img src={item.image} alt={item.name} loading="lazy" /></div>
+  <div class="card__body">
+    <div class="card__row">
+      <h3 class="card__name">{item.name}</h3>
+      <span class="card__price">${item.price.toFixed(2)}</span>
+    </div>
+    <p class="card__desc">{item.desc}</p>
+    {item.tag && <span class="card__tag">{item.tag}</span>}
+  </div>
+</article>

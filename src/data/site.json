@@ -1,0 +1,15 @@
+{
+  "brandName": "THEEE BURGER",
+  "slogan": "Burger? Right here.",
+  "phone": "(408) 555-0142",
+  "email": "hello@theeeburger.com",
+  "addressLine": "72 N San Pedro St, San Jose, CA 95110",
+  "neighborhood": "San Pedro Square",
+  "footerNote": "Flame-grilled in San Jose since 2014.",
+  "instagram": "https://instagram.com",
+  "nav": [
+    { "label": "Menu", "href": "/menu" },
+    { "label": "About", "href": "/about" },
+    { "label": "Locations", "href": "/locations" }
+  ]
+}

@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import MenuCard from '../components/MenuCard.astro';
+import menu from '../data/menu.json';
+---
+<Base title="Menu — THEEE BURGER" description="Flame-grilled signature burgers, sides, hand-spun shakes and dessert. San Jose dine-in.">
+
+  <header class="page-hero">
+    <div class="container">
+      <span class="eyebrow">{menu.eyebrow}</span>
+      <h1>{menu.title}</h1>
+      <p>{menu.intro}</p>
+    </div>
+  </header>
+
+  <section class="section--tight">
+    <div class="container">
+      <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Signature Burgers</h2>
+      <div class="grid grid--3">
+        {menu.burgers.map((item) => <MenuCard item={item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="container">
+      <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Sides</h2>
+      <div class="grid grid--4">
+        {menu.sides.map((item) => <MenuCard item={item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight scene">
+    <img class="scene__bg" src="/images/home-smoke.jpg" alt="" aria-hidden="true" style="opacity:.45;" />
+    <div class="scene__shade shade-full"></div>
+    <div class="container">
+      <h2 class="cat-label" style="font-size:18px; margin-bottom:28px;">Shakes & Lemonade</h2>
+      <div class="drinks">
+        {menu.drinks.map((d, i) => (
+          <div class={`drink reveal d${(i % 3) + 1}`}>
+            <div class="drink__img"><img src={d.image} alt={d.name} loading="lazy" /></div>
+            <div class="drink__name">{d.name}</div>
+            <div class="drink__price">${d.price.toFixed(2)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="container">
+      <h2 class="cat-label" style="font-size:18px; margin-bottom:22px;">Dessert</h2>
+      <div class="grid grid--3">
+        {menu.desserts.map((item) => <MenuCard item={item} />)}
+      </div>
+      <div class="btn-row reveal" style="margin-top:46px;">
+        <a href="/order" class="btn btn--red">Order to your table</a>
+      </div>
+    </div>
+  </section>
+
+</Base>

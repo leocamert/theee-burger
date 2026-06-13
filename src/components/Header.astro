@@ -1,0 +1,72 @@
+---
+import site from '../data/site.json';
+const nav = site.nav;
+---
+<header class="masthead">
+  <a href="/" id="mast-logo" class="logo" aria-label={`${site.brandName} home`}>TH<span class="eee">EEE</span><span class="rest">&nbsp;BURGER</span></a>
+  <nav class="mast-nav" aria-label="Primary">
+    {nav.map((item, i) => (
+      <>
+        <a href={item.href}>{item.label}</a>
+        <span class="dot" aria-hidden="true">·</span>
+      </>
+    ))}
+    <a href="/order" class="order">Order Now</a>
+  </nav>
+</header>
+
+<div class="topbar" id="topbar" aria-hidden="true">
+  <a href="/" class="topbar__logo">TH<span class="eee">EEE</span> BURGER</a>
+  <nav class="topbar__nav" aria-label="Secondary">
+    {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    <a href="/order" class="btn btn--red">Order</a>
+  </nav>
+</div>
+
+<script>
+  // EEE stretch: flourish on load, hold on hover
+  const logo = document.getElementById('mast-logo');
+  if (logo) {
+    const eee = logo.querySelector('.eee') as HTMLElement;
+    const rest = logo.querySelector('.rest') as HTMLElement;
+    let base = 0;
+    let current = 1;
+    const apply = (s: number) => {
+      eee.style.transform = `scaleX(${s})`;
+      rest.style.transform = `translateX(${(base * (s - 1)).toFixed(1)}px)`;
+    };
+    const measure = () => { eee.style.transform = 'scaleX(1)'; base = eee.getBoundingClientRect().width; apply(current); };
+    const tween = (from: number, to: number, dur: number, then?: () => void) => {
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        current = from + (to - from) * e;
+        apply(current);
+        if (p < 1) requestAnimationFrame(step); else then && then();
+      };
+      requestAnimationFrame(step);
+    };
+    const ready = (document as any).fonts ? (document as any).fonts.ready : Promise.resolve();
+    ready.then(() => {
+      measure();
+      tween(1, 1.95, 680, () => tween(1.95, 1, 720));
+    });
+    window.addEventListener('resize', measure);
+    logo.addEventListener('mouseenter', () => tween(current, 1.75, 420));
+    logo.addEventListener('mouseleave', () => tween(current, 1, 420));
+  }
+
+  // Compact sticky bar on scroll
+  const topbar = document.getElementById('topbar');
+  if (topbar) {
+    let shown = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y > 340 && !shown) { topbar.classList.add('show'); shown = true; }
+      else if (y <= 340 && shown) { topbar.classList.remove('show'); shown = false; }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

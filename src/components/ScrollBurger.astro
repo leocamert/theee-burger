@@ -1,0 +1,70 @@
+---
+import home from '../data/home.json';
+const layers = [
+  { src: '/images/layer-top-bun.png',    alt: 'Toasted sesame bun',  w: '70%', c: -0.17,  o: -0.40 },
+  { src: '/images/layer-lettuce.png',     alt: 'Fresh lettuce',       w: '86%', c: -0.075, o: -0.225 },
+  { src: '/images/layer-tomato.png',      alt: 'Tomato',              w: '58%', c: -0.02,  o: -0.055 },
+  { src: '/images/layer-cheese.png',      alt: 'Melted cheddar',      w: '66%', c: 0.025,  o: 0.11 },
+  { src: '/images/layer-patty.png',       alt: 'Flame-grilled patty', w: '72%', c: 0.095,  o: 0.275 },
+  { src: '/images/layer-bottom-bun.png',  alt: 'Toasted base',        w: '72%', c: 0.19,   o: 0.46 },
+];
+---
+<section class="hero" id="hero">
+  <div class="hero__stage">
+    <div class="hero__glow"></div>
+
+    <div class="hero__burger" id="hburger">
+      {layers.map((l, i) => (
+        <img class="hero__layer" src={l.src} alt={l.alt} data-c={l.c} data-o={l.o} style={`width:${l.w}; z-index:${10 - i};`} />
+      ))}
+    </div>
+
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <div class="hero__copy hero__copy--top" id="heroTop">
+      <span class="eyebrow">{home.heroEyebrow}</span>
+      <h1 class="hero__title">Burger?<br /><span class="accent">Right here.</span></h1>
+      <p class="hero__sub">{home.heroSub}</p>
+    </div>
+
+    <div class="hero__actions" id="heroActions">
+      <a href="/order" class="btn btn--red">Order to your table</a>
+      <a href="/menu" class="btn btn--ghost">View menu</a>
+    </div>
+
+    <div class="hero__hint" id="heroHint">{home.scrollHint}<span aria-hidden="true">&#8595;</span></div>
+  </div>
+</section>
+
+<script>
+  const hero = document.getElementById('hero');
+  const burger = document.getElementById('hburger');
+  if (hero && burger) {
+    const layers = Array.from(burger.querySelectorAll('.hero__layer')) as HTMLElement[];
+    const top = document.getElementById('heroTop')!;
+    const actions = document.getElementById('heroActions')!;
+    const hint = document.getElementById('heroHint')!;
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+    function render() {
+      const H = burger!.offsetHeight;
+      const total = hero!.offsetHeight - window.innerHeight;
+      const scrolled = clamp(-hero!.getBoundingClientRect().top, 0, total);
+      const p = total > 0 ? scrolled / total : 0;
+      const e = ease(p);
+      for (const l of layers) {
+        const c = parseFloat(l.dataset.c!);
+        const o = parseFloat(l.dataset.o!);
+        const y = (c + (o - c) * e) * H;
+        l.style.transform = `translate(-50%,-50%) translateY(${y.toFixed(1)}px)`;
+      }
+      top.style.opacity = String(clamp(1 - p * 1.8, 0, 1));
+      top.style.transform = `translateY(${(-p * 44).toFixed(1)}px)`;
+      actions.style.opacity = String(clamp(1 - p * 2.4, 0, 1));
+      hint.style.opacity = String(clamp(1 - p * 4, 0, 1));
+    }
+    window.addEventListener('scroll', () => requestAnimationFrame(render), { passive: true });
+    window.addEventListener('resize', render);
+    render();
+  }
+</script>

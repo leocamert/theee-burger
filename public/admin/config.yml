@@ -1,0 +1,196 @@
+backend:
+  name: github
+  repo: leocamert/theee-burger   # <-- change to your GitHub username/repo
+  branch: main
+
+# Lets you edit locally with no login: run `npm run cms` + `npm run dev`,
+# then open http://localhost:4321/admin
+local_backend: true
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: site
+    label: "Site & Branding"
+    files:
+      - file: "src/data/site.json"
+        name: site
+        label: "Site settings"
+        fields:
+          - { label: "Brand name", name: brandName, widget: string }
+          - { label: "Slogan", name: slogan, widget: string }
+          - { label: "Phone", name: phone, widget: string }
+          - { label: "Email", name: email, widget: string }
+          - { label: "Address line", name: addressLine, widget: string }
+          - { label: "Neighborhood", name: neighborhood, widget: string }
+          - { label: "Footer note", name: footerNote, widget: string }
+          - { label: "Instagram URL", name: instagram, widget: string, required: false }
+          - label: "Nav links"
+            name: nav
+            widget: list
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Link, name: href, widget: string }
+
+  - name: home
+    label: "Home page"
+    files:
+      - file: "src/data/home.json"
+        name: home
+        label: "Home page"
+        fields:
+          - { label: "Hero eyebrow", name: heroEyebrow, widget: string }
+          - { label: "Hero headline", name: heroHeadline, widget: string }
+          - { label: "Hero subtext", name: heroSub, widget: string }
+          - { label: "Scroll hint", name: scrollHint, widget: string }
+          - { label: "Intro eyebrow", name: introEyebrow, widget: string }
+          - { label: "Intro title", name: introTitle, widget: string }
+          - { label: "Intro text", name: introText, widget: text }
+          - label: "Stats"
+            name: stats
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string }
+              - { label: Label, name: label, widget: string }
+          - { label: "Featured eyebrow", name: featuredEyebrow, widget: string }
+          - { label: "Featured title", name: featuredTitle, widget: string }
+          - { label: "Featured text", name: featuredText, widget: text }
+          - { label: "Drinks eyebrow", name: drinksEyebrow, widget: string }
+          - { label: "Drinks title", name: drinksTitle, widget: string }
+          - { label: "Drinks text", name: drinksText, widget: text }
+          - { label: "Combo eyebrow", name: comboEyebrow, widget: string }
+          - { label: "Combo title", name: comboTitle, widget: string }
+          - { label: "Combo text", name: comboText, widget: text }
+          - { label: "CTA title", name: ctaTitle, widget: string }
+          - { label: "CTA text", name: ctaText, widget: text }
+
+  - name: about
+    label: "About page"
+    files:
+      - file: "src/data/about.json"
+        name: about
+        label: "About page"
+        fields:
+          - { label: "Eyebrow", name: eyebrow, widget: string }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Lead", name: lead, widget: text }
+          - label: "Paragraphs"
+            name: paragraphs
+            widget: list
+            field: { label: Paragraph, name: paragraph, widget: text }
+          - label: "Values"
+            name: values
+            widget: list
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Text, name: text, widget: text }
+          - label: "Stats"
+            name: stats
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string }
+              - { label: Label, name: label, widget: string }
+          - { label: "Quote", name: quote, widget: string }
+          - { label: "Grill image", name: imageGrill, widget: image }
+          - { label: "Chef image", name: imageChef, widget: image }
+          - { label: "Ingredients image", name: imageIngredients, widget: image }
+
+  - name: menu
+    label: "Menu"
+    files:
+      - file: "src/data/menu.json"
+        name: menu
+        label: "Menu"
+        fields:
+          - { label: "Eyebrow", name: eyebrow, widget: string }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Intro", name: intro, widget: text }
+          - label: "Burgers"
+            name: burgers
+            widget: list
+            summary: "{{fields.name}} — ${{fields.price}}"
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Price, name: price, widget: number, value_type: float, step: 0.01 }
+              - { label: Description, name: desc, widget: text }
+              - { label: Image, name: image, widget: image }
+              - { label: Tag, name: tag, widget: string, required: false }
+          - label: "Sides"
+            name: sides
+            widget: list
+            summary: "{{fields.name}} — ${{fields.price}}"
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Price, name: price, widget: number, value_type: float, step: 0.01 }
+              - { label: Description, name: desc, widget: text }
+              - { label: Image, name: image, widget: image }
+          - label: "Drinks"
+            name: drinks
+            widget: list
+            summary: "{{fields.name}} — ${{fields.price}}"
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Price, name: price, widget: number, value_type: float, step: 0.01 }
+              - { label: Description, name: desc, widget: text }
+              - { label: Image, name: image, widget: image }
+          - label: "Desserts"
+            name: desserts
+            widget: list
+            summary: "{{fields.name}} — ${{fields.price}}"
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: Price, name: price, widget: number, value_type: float, step: 0.01 }
+              - { label: Description, name: desc, widget: text }
+              - { label: Image, name: image, widget: image }
+
+  - name: locations
+    label: "Locations"
+    files:
+      - file: "src/data/locations.json"
+        name: locations
+        label: "Locations"
+        fields:
+          - { label: "Eyebrow", name: eyebrow, widget: string }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Intro", name: intro, widget: text }
+          - { label: "Location name", name: name, widget: string }
+          - { label: "Address line", name: addressLine, widget: string }
+          - { label: "Neighborhood", name: neighborhood, widget: string }
+          - { label: "Phone", name: phone, widget: string }
+          - { label: "Email", name: email, widget: string }
+          - label: "Hours"
+            name: hours
+            widget: list
+            fields:
+              - { label: Days, name: days, widget: string }
+              - { label: Time, name: time, widget: string }
+          - { label: "Map query (address for the map)", name: mapQuery, widget: string }
+          - { label: "Note", name: note, widget: text }
+
+  - name: order
+    label: "Order page"
+    files:
+      - file: "src/data/order.json"
+        name: order
+        label: "Order page"
+        fields:
+          - { label: "Eyebrow", name: eyebrow, widget: string }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Intro", name: intro, widget: text }
+          - { label: "Customer field label", name: customerLabel, widget: string }
+          - { label: "Customer placeholder", name: customerPlaceholder, widget: string }
+          - { label: "Customer help (shown in parentheses)", name: customerHelp, widget: string }
+          - { label: "Table field label", name: tableLabel, widget: string }
+          - { label: "Table placeholder", name: tablePlaceholder, widget: string }
+          - { label: "Submit button label", name: submitLabel, widget: string }
+          - { label: "No-payment note", name: noPaymentNote, widget: string }
+          - label: "Orderable items"
+            name: items
+            widget: list
+            summary: "{{fields.name}} ({{fields.category}}) — ${{fields.price}}"
+            fields:
+              - { label: ID, name: id, widget: string, hint: "lowercase, no spaces — must be unique" }
+              - { label: Name, name: name, widget: string }
+              - { label: Price, name: price, widget: number, value_type: float, step: 0.01 }
+              - { label: Category, name: category, widget: string }

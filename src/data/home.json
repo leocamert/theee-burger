@@ -1,0 +1,25 @@
+{
+  "heroEyebrow": "Flame-grilled · San Jose",
+  "heroHeadline": "Burger? Right here.",
+  "heroSub": "Hand-pressed, flame-grilled, and stacked to order.",
+  "scrollHint": "Scroll to build it",
+  "introEyebrow": "No shortcuts",
+  "introTitle": "Real fire. Real beef.",
+  "introText": "Every patty is hand-pressed and seared over an open flame the second you order it. Fresh produce, toasted brioche, and cheese that actually melts. That's the whole trick — we just refuse to cut corners.",
+  "stats": [
+    { "value": "2014", "label": "Grilling since" },
+    { "value": "100%", "label": "Fresh beef, never frozen" },
+    { "value": "6", "label": "Signature stacks" }
+  ],
+  "featuredEyebrow": "The line-up",
+  "featuredTitle": "Signature stacks",
+  "featuredText": "Six builds we'd put our name on. Start here, then make it yours.",
+  "drinksEyebrow": "Hand-spun",
+  "drinksTitle": "Shake on it.",
+  "drinksText": "Thick, hand-spun shakes and fresh-squeezed lemonade — the only way to wash it down.",
+  "comboEyebrow": "The full experience",
+  "comboTitle": "Make it a combo",
+  "comboText": "Burger, a basket of golden fries, and an ice-cold drink. Everything you came for, on one tray.",
+  "ctaTitle": "Grab a table. We'll bring the fire.",
+  "ctaText": "Dine in, order from your seat, and we'll do the rest — no app, no line."
+}

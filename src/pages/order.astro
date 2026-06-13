@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+import order from '../data/order.json';
+const cats: string[] = [];
+for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.category);
+---
+<Base title="Order to your table — THEEE BURGER" description="Already seated? Order from your table at THEEE BURGER, San Jose.">
+
+  <header class="page-hero">
+    <div class="container">
+      <span class="eyebrow">{order.eyebrow}</span>
+      <h1>{order.title}</h1>
+      <p>{order.intro}</p>
+    </div>
+  </header>
+
+  <section class="section--tight">
+    <div class="container">
+      <div class="order-grid">
+        <!-- left: details + items -->
+        <div>
+          <div class="field">
+            <label for="customer">{order.customerLabel}</label>
+            <input id="customer" name="customer" type="text" inputmode="numeric" placeholder={order.customerPlaceholder} autocomplete="off" />
+            <span class="help">({order.customerHelp})</span>
+          </div>
+          <div class="field">
+            <label for="table">{order.tableLabel}</label>
+            <input id="table" name="table" type="text" inputmode="numeric" placeholder={order.tablePlaceholder} autocomplete="off" />
+          </div>
+
+          <div id="items" style="margin-top:10px;">
+            {cats.map((cat) => (
+              <div>
+                <div class="cat-label">{cat}</div>
+                {order.items.filter((i) => i.category === cat).map((i) => (
+                  <div class="order-item" data-id={i.id} data-name={i.name} data-price={i.price}>
+                    <div class="order-item__info">
+                      <div class="order-item__name">{i.name}</div>
+                      <div class="order-item__price">${i.price.toFixed(2)}</div>
+                    </div>
+                    <div class="stepper">
+                      <button type="button" class="dec" aria-label={`Remove one ${i.name}`} disabled>&minus;</button>
+                      <span class="qty">0</span>
+                      <button type="button" class="inc" aria-label={`Add one ${i.name}`}>+</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- right: summary -->
+        <aside class="summary">
+          <h3>Your order</h3>
+          <p class="muted" style="font-size:13px; letter-spacing:.04em;">Dine-in · table service</p>
+          <div class="summary__lines" id="sumLines">
+            <div class="summary__empty">Nothing added yet — tap + to start your order.</div>
+          </div>
+          <div class="summary__total"><span class="t">Total</span><span class="v" id="sumTotal">$0.00</span></div>
+          <button type="button" class="btn btn--red" id="placeBtn">{order.submitLabel}</button>
+          <p class="note">{order.noPaymentNote}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- confirmation -->
+  <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal__card">
+      <div class="modal__check" aria-hidden="true">&#10003;</div>
+      <h3 id="modalTitle">Order sent!</h3>
+      <p>Your order is on its way to the kitchen.</p>
+      <p class="tbl" id="modalTable"></p>
+      <p class="muted" id="modalItems" style="font-size:14px; margin-top:14px;"></p>
+      <p class="muted" style="margin-top:14px; font-size:14px;">{order.noPaymentNote}</p>
+      <button type="button" class="btn btn--red" id="modalClose">Start a new order</button>
+    </div>
+  </div>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.order-item')) as HTMLElement[];
+  const sumLines = document.getElementById('sumLines')!;
+  const sumTotal = document.getElementById('sumTotal')!;
+  const placeBtn = document.getElementById('placeBtn')!;
+  const customer = document.getElementById('customer') as HTMLInputElement;
+  const table = document.getElementById('table') as HTMLInputElement;
+  const modal = document.getElementById('orderModal')!;
+  const modalClose = document.getElementById('modalClose')!;
+  const modalTable = document.getElementById('modalTable')!;
+  const modalItems = document.getElementById('modalItems')!;
+
+  const qty: Record<string, number> = {};
+  const fmt = (n: number) => '$' + n.toFixed(2);
+
+  function refresh() {
+    let total = 0;
+    const lines: string[] = [];
+    for (const row of items) {
+      const id = row.dataset.id!;
+      const n = qty[id] || 0;
+      const price = parseFloat(row.dataset.price!);
+      const name = row.dataset.name!;
+      row.classList.toggle('active', n > 0);
+      (row.querySelector('.dec') as HTMLButtonElement).disabled = n === 0;
+      (row.querySelector('.qty') as HTMLElement).textContent = String(n);
+      if (n > 0) {
+        total += n * price;
+        lines.push(`<div class="summary__line"><span>${n} × ${name}</span><span>${fmt(n * price)}</span></div>`);
+      }
+    }
+    sumLines.innerHTML = lines.length ? lines.join('') : '<div class="summary__empty">Nothing added yet — tap + to start your order.</div>';
+    sumTotal.textContent = fmt(total);
+  }
+
+  for (const row of items) {
+    const id = row.dataset.id!;
+    qty[id] = 0;
+    row.querySelector('.inc')!.addEventListener('click', () => { qty[id] = Math.min(99, (qty[id] || 0) + 1); refresh(); });
+    row.querySelector('.dec')!.addEventListener('click', () => { qty[id] = Math.max(0, (qty[id] || 0) - 1); refresh(); });
+  }
+
+  function validateField(el: HTMLInputElement) {
+    const ok = el.value.trim().length > 0;
+    el.classList.toggle('invalid', !ok);
+    return ok;
+  }
+  customer.addEventListener('input', () => customer.classList.remove('invalid'));
+  table.addEventListener('input', () => table.classList.remove('invalid'));
+
+  placeBtn.addEventListener('click', () => {
+    const okC = validateField(customer);
+    const okT = validateField(table);
+    const count = Object.values(qty).reduce((a, b) => a + b, 0);
+    if (!okC || !okT) { (!okC ? customer : table).focus(); return; }
+    if (count === 0) { placeBtn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 280 }); return; }
+    const picked = items.filter((r) => (qty[r.dataset.id!] || 0) > 0).map((r) => `${qty[r.dataset.id!]} × ${r.dataset.name}`);
+    modalTable.textContent = `Table ${table.value.trim()} · Customer #${customer.value.trim()}`;
+    modalItems.innerHTML = picked.join(' &nbsp;•&nbsp; ');
+    modal.classList.add('show');
+  });
+
+  modalClose.addEventListener('click', () => {
+    modal.classList.remove('show');
+    for (const k in qty) qty[k] = 0;
+    customer.value = ''; table.value = '';
+    refresh();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+  refresh();
+</script>
