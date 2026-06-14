@@ -88,6 +88,25 @@ src/
 - **Prices, menu items:** `src/data/menu.json` and `src/data/order.json`
 - **Address & hours:** `src/data/locations.json`
 
+## Kitchen dashboard + ordering backend
+
+Orders placed on `/order` and job applications from `/careers` are saved to a Cloudflare **D1** database and shown on a staff dashboard at **`/kitchen`** (password-protected, auto-refreshing, with a new-order chime).
+
+- **Database:** D1 `theee-burger-db` (tables in `db/schema.sql`). Binding name `DB` (see `wrangler.toml`).
+- **API:** Cloudflare Pages Functions in `functions/api/` (`order`, `orders`, `orders/[id]`, `apply`, `applications`, `resume/[id]`).
+- **Dashboard password:** stored as the encrypted Pages secret `KITCHEN_PASSWORD`. Change it anytime:
+  - Dashboard → your Pages project → **Settings → Variables and Secrets → KITCHEN_PASSWORD → Edit**, or
+  - `printf "your-new-password" | npx wrangler pages secret put KITCHEN_PASSWORD --project-name theee-burger`
+- **Résumés** are stored in the database (base64) and downloaded from the dashboard.
+
+### Local development with the backend
+```bash
+npm run build
+npx wrangler d1 execute theee-burger-db --local --file=db/schema.sql   # once
+npx wrangler pages dev                                                  # http://localhost:8788
+```
+(`KITCHEN_PASSWORD` for local is read from `.dev.vars`.)
+
 ## Notes
 
 - Images were exported transparent (burger layers + drinks). If you replace one via the CMS, upload a PNG with a real transparent background for those.

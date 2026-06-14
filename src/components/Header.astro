@@ -3,6 +3,7 @@ import site from '../data/site.json';
 const nav = site.nav;
 ---
 <header class="masthead">
+  <a href="/careers" class="mast-careers">Careers</a>
   <a href="/" id="mast-logo" class="logo" aria-label={`${site.brandName} home`}>TH<span class="eee">EEE</span><span class="rest">&nbsp;BURGER</span></a>
   <nav class="mast-nav" aria-label="Primary">
     {nav.map((item, i) => (
@@ -19,6 +20,7 @@ const nav = site.nav;
   <a href="/" class="topbar__logo">TH<span class="eee">EEE</span> BURGER</a>
   <nav class="topbar__nav" aria-label="Secondary">
     {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    <a href="/careers">Careers</a>
     <a href="/order" class="btn btn--red">Order</a>
   </nav>
 </div>

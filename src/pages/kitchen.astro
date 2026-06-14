@@ -1,0 +1,269 @@
+---
+import '../styles/global.css';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kitchen — THEEE BURGER</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="kbody">
+    <!-- login gate -->
+    <div id="gate" class="kgate">
+      <form id="gateForm" class="kgate__card">
+        <div class="kgate__logo">TH<span>EEE</span> BURGER</div>
+        <p class="kgate__sub">Kitchen dashboard</p>
+        <input id="kpass" type="password" placeholder="Password" autocomplete="current-password" />
+        <button type="submit" class="btn btn--red" style="width:100%; justify-content:center;">Enter</button>
+        <p id="gateErr" class="kgate__err"></p>
+      </form>
+    </div>
+
+    <!-- dashboard -->
+    <div id="dash" class="kdash" hidden>
+      <header class="ktop">
+        <div class="ktop__brand">TH<span>EEE</span> BURGER · Kitchen</div>
+        <div class="ktop__tabs">
+          <button data-tab="orders" class="ktab active" id="tabOrders">Orders <span id="orderCount" class="kbadge">0</span></button>
+          <button data-tab="apps" class="ktab" id="tabApps">Applications</button>
+        </div>
+        <div class="ktop__right">
+          <label class="ktoggle"><input type="checkbox" id="showServed" /> Show served</label>
+          <button id="logout" class="kbtn-ghost">Log out</button>
+        </div>
+      </header>
+
+      <main id="ordersView" class="kview">
+        <div id="ordersGrid" class="kgrid"></div>
+        <p id="ordersEmpty" class="kempty">No active orders. New ones land here automatically.</p>
+      </main>
+
+      <main id="appsView" class="kview" hidden>
+        <div id="appsList" class="kapps"></div>
+        <p id="appsEmpty" class="kempty">No applications yet.</p>
+      </main>
+    </div>
+
+    <style is:global>
+      .kbody { background: #0b0b0d; min-height: 100vh; }
+      .kgate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+      .kgate__card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 18px; padding: 34px 30px; width: 100%; max-width: 360px; text-align: center; }
+      .kgate__logo { font-family: var(--display); font-size: 30px; text-transform: uppercase; }
+      .kgate__logo span { color: var(--red); }
+      .kgate__sub { color: var(--muted); font-size: 13px; letter-spacing: .18em; text-transform: uppercase; margin: 6px 0 22px; }
+      .kgate__card input { width: 100%; background: var(--ink-3); border: 1px solid var(--line); color: var(--cream); border-radius: 12px; padding: 14px 16px; font-size: 16px; margin-bottom: 14px; }
+      .kgate__card input:focus { outline: none; border-color: var(--red); }
+      .kgate__err { color: var(--red); font-size: 14px; min-height: 18px; margin-top: 12px; }
+
+      .ktop { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 14px 20px; background: rgba(8,8,10,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+      .ktop__brand { font-family: var(--display); text-transform: uppercase; letter-spacing: .03em; font-size: 18px; }
+      .ktop__brand span { color: var(--red); }
+      .ktop__tabs { display: flex; gap: 8px; }
+      .ktab { background: transparent; border: 1px solid var(--line); color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-size: 14px; font-weight: 500; }
+      .ktab.active { background: var(--cream); color: #111; border-color: var(--cream); }
+      .kbadge { background: var(--red); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 12px; margin-left: 4px; }
+      .ktop__right { display: flex; align-items: center; gap: 16px; }
+      .ktoggle { color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+      .kbtn-ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+      .kbtn-ghost:hover { color: var(--cream); border-color: var(--cream); }
+
+      .kview { padding: 22px 20px 60px; max-width: 1300px; margin: 0 auto; }
+      .kempty { color: var(--muted-2); text-align: center; padding: 60px 0; font-size: 15px; }
+      .kgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+
+      .kcard { background: var(--ink-2); border: 1px solid var(--line-soft); border-left: 4px solid var(--red); border-radius: 14px; padding: 16px 18px; }
+      .kcard.s-preparing { border-left-color: var(--flame); }
+      .kcard.s-served { border-left-color: var(--muted-2); opacity: .6; }
+      .kcard.flash { animation: kflash 1.2s ease; }
+      @keyframes kflash { 0%, 100% { box-shadow: 0 0 0 0 rgba(228,19,28,0); } 30% { box-shadow: 0 0 0 4px rgba(228,19,28,.5); } }
+      .kcard__top { display: flex; align-items: baseline; gap: 10px; }
+      .ktable { font-family: var(--display); font-size: 22px; text-transform: uppercase; }
+      .kcust { color: var(--muted); font-size: 14px; }
+      .ktime { margin-left: auto; color: var(--muted-2); font-size: 12px; white-space: nowrap; }
+      .kitems { list-style: none; margin: 12px 0; padding: 0; }
+      .kitems li { padding: 4px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
+      .kitems li:last-child { border-bottom: 0; }
+      .kstatuschip { display: inline-block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
+      .chip-new { background: rgba(228,19,28,.16); color: #ff9a9a; }
+      .chip-preparing { background: rgba(255,122,24,.16); color: var(--flame); }
+      .chip-served { background: rgba(245,241,234,.08); color: var(--muted); }
+      .kcard__bot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+      .ktotal { font-family: var(--display); font-size: 20px; color: var(--red); }
+      .kactions { display: flex; gap: 8px; }
+      .kactions button { border: 1px solid var(--line); background: transparent; color: var(--cream); padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; }
+      .kactions button.prim { background: var(--red); border-color: var(--red); color: #fff; }
+      .kactions button:hover { border-color: var(--cream); }
+
+      .kapps { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+      .kapp { background: var(--ink-2); border: 1px solid var(--line-soft); border-radius: 14px; padding: 18px 20px; }
+      .kapp__head { display: flex; align-items: baseline; gap: 10px; }
+      .kapp__head strong { font-size: 17px; }
+      .kapp__meta { color: var(--muted); font-size: 14px; margin: 6px 0; }
+      .kapp__meta a { color: var(--flame); }
+      .kapp__msg { color: var(--cream); font-size: 14px; opacity: .85; margin: 8px 0 0; white-space: pre-wrap; }
+      .kapp__resume { margin-top: 12px; }
+      .kapp__resume button { border: 1px solid var(--line); background: transparent; color: var(--cream); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+      .kapp__resume button:hover { border-color: var(--flame); color: var(--flame); }
+    </style>
+
+    <script>
+      const PASS_KEY = 'tb_kpass';
+      const gate = document.getElementById('gate')!;
+      const dash = document.getElementById('dash')!;
+      const gateForm = document.getElementById('gateForm') as HTMLFormElement;
+      const kpass = document.getElementById('kpass') as HTMLInputElement;
+      const gateErr = document.getElementById('gateErr')!;
+      let pass = sessionStorage.getItem(PASS_KEY) || '';
+      let knownIds = new Set<number>();
+      let firstLoad = true;
+      let timer: any = null;
+
+      const esc = (s: string) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]);
+      const headers = () => ({ 'x-kitchen-pass': pass });
+
+      function ago(iso: string) {
+        const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+        if (s < 60) return Math.floor(s) + 's ago';
+        if (s < 3600) return Math.floor(s / 60) + 'm ago';
+        return Math.floor(s / 3600) + 'h ago';
+      }
+      function beep() {
+        try {
+          const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+          const ac = new AC();
+          const o = ac.createOscillator(), g = ac.createGain();
+          o.connect(g); g.connect(ac.destination); o.type = 'sine'; o.frequency.value = 880;
+          g.gain.setValueAtTime(0.0001, ac.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.45);
+          o.start(); o.stop(ac.currentTime + 0.45);
+        } catch (e) {}
+      }
+
+      async function loadOrders() {
+        const showServed = (document.getElementById('showServed') as HTMLInputElement).checked;
+        const res = await fetch('/api/orders' + (showServed ? '?all=1' : ''), { headers: headers() });
+        if (res.status === 401) { logout(); return; }
+        const data = await res.json();
+        const orders = data.orders || [];
+        const grid = document.getElementById('ordersGrid')!;
+        const active = orders.filter((o: any) => o.status !== 'served');
+        document.getElementById('orderCount')!.textContent = String(active.length);
+        document.getElementById('ordersEmpty')!.style.display = orders.length ? 'none' : 'block';
+
+        let isNew = false;
+        const ids = new Set<number>();
+        grid.innerHTML = orders.map((o: any) => {
+          ids.add(o.id);
+          if (!firstLoad && !knownIds.has(o.id) && o.status === 'new') isNew = true;
+          const items = (o.items || []).map((i: any) => `<li>${i.qty} × ${esc(i.name)}</li>`).join('');
+          const chip = `<span class="kstatuschip chip-${o.status}">${o.status}</span>`;
+          const acts = o.status === 'served' ? '' :
+            `<div class="kactions">
+               ${o.status === 'new' ? `<button data-id="${o.id}" data-act="preparing" class="prim">Start</button>` : ''}
+               <button data-id="${o.id}" data-act="served">Served</button>
+             </div>`;
+          return `<div class="kcard s-${o.status} ${!firstLoad && !knownIds.has(o.id) ? 'flash' : ''}" data-id="${o.id}">
+            <div class="kcard__top"><span class="ktable">Table ${esc(o.table_number)}</span><span class="kcust">#${esc(o.customer_number)}</span><span class="ktime">${ago(o.created_at)}</span></div>
+            <ul class="kitems">${items}</ul>
+            <div class="kcard__bot"><span class="ktotal">$${Number(o.total).toFixed(2)}${chip}</span>${acts}</div>
+          </div>`;
+        }).join('');
+
+        if (isNew) { beep(); if (navigator.vibrate) navigator.vibrate(200); }
+        knownIds = ids;
+        firstLoad = false;
+
+        grid.querySelectorAll('button[data-act]').forEach((b) => {
+          b.addEventListener('click', async () => {
+            const id = (b as HTMLElement).dataset.id; const act = (b as HTMLElement).dataset.act;
+            await fetch('/api/orders/' + id, { method: 'PATCH', headers: { ...headers(), 'content-type': 'application/json' }, body: JSON.stringify({ status: act }) });
+            loadOrders();
+          });
+        });
+      }
+
+      async function loadApps() {
+        const res = await fetch('/api/applications', { headers: headers() });
+        if (res.status === 401) { logout(); return; }
+        const data = await res.json();
+        const apps = data.applications || [];
+        document.getElementById('appsEmpty')!.style.display = apps.length ? 'none' : 'block';
+        const list = document.getElementById('appsList')!;
+        list.innerHTML = apps.map((a: any) => `
+          <div class="kapp">
+            <div class="kapp__head"><strong>${esc(a.name)}</strong><span class="ktime">${ago(a.created_at)}</span></div>
+            <div class="kapp__meta"><a href="mailto:${esc(a.email)}">${esc(a.email)}</a>${a.phone ? ' · ' + esc(a.phone) : ''}${a.position ? ' · ' + esc(a.position) : ''}</div>
+            ${a.message ? `<p class="kapp__msg">${esc(a.message)}</p>` : ''}
+            ${a.has_resume ? `<div class="kapp__resume"><button data-resume="${a.id}" data-name="${esc(a.resume_name || 'resume')}">Download résumé</button></div>` : ''}
+          </div>`).join('');
+        list.querySelectorAll('button[data-resume]').forEach((b) => {
+          b.addEventListener('click', async () => {
+            const id = (b as HTMLElement).dataset.resume; const nm = (b as HTMLElement).dataset.name || 'resume';
+            const r = await fetch('/api/resume/' + id, { headers: headers() });
+            if (!r.ok) return;
+            const blob = await r.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = nm; a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+          });
+        });
+      }
+
+      function startPolling() {
+        loadOrders();
+        clearInterval(timer);
+        timer = setInterval(() => {
+          if (!(document.getElementById('appsView') as HTMLElement).hidden) loadApps();
+          else loadOrders();
+        }, 5000);
+      }
+
+      function showDash() {
+        gate.style.display = 'none';
+        dash.hidden = false;
+        startPolling();
+      }
+      function logout() {
+        pass = ''; sessionStorage.removeItem(PASS_KEY);
+        clearInterval(timer);
+        dash.hidden = true; gate.style.display = 'flex';
+      }
+
+      // tabs
+      document.getElementById('tabOrders')!.addEventListener('click', () => switchTab('orders'));
+      document.getElementById('tabApps')!.addEventListener('click', () => switchTab('apps'));
+      function switchTab(t: string) {
+        const orders = t === 'orders';
+        document.getElementById('tabOrders')!.classList.toggle('active', orders);
+        document.getElementById('tabApps')!.classList.toggle('active', !orders);
+        (document.getElementById('ordersView') as HTMLElement).hidden = !orders;
+        (document.getElementById('appsView') as HTMLElement).hidden = orders;
+        if (orders) loadOrders(); else loadApps();
+      }
+      document.getElementById('showServed')!.addEventListener('change', loadOrders);
+      document.getElementById('logout')!.addEventListener('click', logout);
+
+      gateForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        gateErr.textContent = '';
+        pass = kpass.value;
+        const res = await fetch('/api/orders', { headers: headers() });
+        if (res.ok) { sessionStorage.setItem(PASS_KEY, pass); showDash(); }
+        else if (res.status === 503) gateErr.textContent = 'Dashboard password is not set up yet.';
+        else { gateErr.textContent = 'Wrong password.'; pass = ''; }
+      });
+
+      // auto-login if we already have a stored password
+      if (pass) {
+        fetch('/api/orders', { headers: headers() }).then((r) => { if (r.ok) showDash(); else { pass = ''; sessionStorage.removeItem(PASS_KEY); } });
+      }
+    </script>
+  </body>
+</html>

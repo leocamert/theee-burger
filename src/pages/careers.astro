@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+const positions = ['Grill Cook', 'Line Cook', 'Cashier / Front of House', 'Shift Lead', 'Dishwasher', 'Not sure / Other'];
+---
+<Base title="Careers — THEEE BURGER" description="Join the crew at THEEE BURGER in San Jose. Apply to work the grill, the line, or the front of house.">
+
+  <header class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Join the crew</span>
+      <h1>Work with us</h1>
+      <p>We hire for grit and good energy — the grill skills we'll teach you. Flexible shifts, free shift meals, and a team that actually likes showing up. Apply below.</p>
+    </div>
+  </header>
+
+  <section class="section--tight">
+    <div class="container" style="max-width:720px;">
+      <div class="apply-card">
+        <form id="applyForm" novalidate>
+          <div class="field">
+            <label for="name">Full name *</label>
+            <input id="name" name="name" type="text" required autocomplete="name" />
+          </div>
+          <div class="form-2">
+            <div class="field">
+              <label for="email">Email *</label>
+              <input id="email" name="email" type="email" required autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="position">Role you're after</label>
+            <select id="position" name="position">
+              {positions.map((p) => <option value={p}>{p}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Tell us about yourself</label>
+            <textarea id="message" name="message" rows="4" placeholder="Past experience, availability, why THEEE BURGER…"></textarea>
+          </div>
+          <div class="field">
+            <label for="resume">Résumé <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted);">(PDF or Word, max 4 MB)</span></label>
+            <input id="resume" name="resume" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+          </div>
+          <p id="applyStatus" class="apply-status" role="status"></p>
+          <button type="submit" class="btn btn--red" style="width:100%; justify-content:center;">Send application</button>
+        </form>
+
+        <div id="applyDone" class="apply-done">
+          <div class="modal__check" aria-hidden="true">&#10003;</div>
+          <h3>Application received!</h3>
+          <p class="muted">Thanks for applying. If it's a fit, we'll reach out by email. Now go grab a burger.</p>
+          <a href="/menu" class="btn btn--ghost" style="margin-top:18px;">See the menu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<script>
+  const form = document.getElementById('applyForm') as HTMLFormElement;
+  const statusEl = document.getElementById('applyStatus')!;
+  const done = document.getElementById('applyDone')!;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = '';
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/apply', { method: 'POST', body: new FormData(form) });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        form.style.display = 'none';
+        done.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        statusEl.textContent = data.error || 'Something went wrong. Please try again.';
+      }
+    } catch (err) {
+      statusEl.textContent = 'Could not reach the server. Please try again in a moment.';
+    }
+    btn.disabled = false; btn.textContent = label;
+  });
+</script>
+</Base>

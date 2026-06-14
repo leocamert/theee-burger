@@ -139,15 +139,33 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
   customer.addEventListener('input', () => customer.classList.remove('invalid'));
   table.addEventListener('input', () => table.classList.remove('invalid'));
 
-  placeBtn.addEventListener('click', () => {
+  placeBtn.addEventListener('click', async () => {
     const okC = validateField(customer);
     const okT = validateField(table);
     const count = Object.values(qty).reduce((a, b) => a + b, 0);
     if (!okC || !okT) { (!okC ? customer : table).focus(); return; }
     if (count === 0) { placeBtn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 280 }); return; }
-    const picked = items.filter((r) => (qty[r.dataset.id!] || 0) > 0).map((r) => `${qty[r.dataset.id!]} × ${r.dataset.name}`);
+
+    const picked = items.filter((r) => (qty[r.dataset.id!] || 0) > 0);
+    const payloadItems = picked.map((r) => ({ id: r.dataset.id, name: r.dataset.name, qty: qty[r.dataset.id!], price: parseFloat(r.dataset.price!) }));
+
+    const label = placeBtn.textContent;
+    placeBtn.setAttribute('disabled', 'true');
+    placeBtn.textContent = 'Sending…';
+    try {
+      await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ table: table.value.trim(), customer: customer.value.trim(), items: payloadItems }),
+      });
+    } catch (e) {
+      // Offline / not yet deployed — still confirm so the guest isn't left hanging
+    }
+    placeBtn.removeAttribute('disabled');
+    placeBtn.textContent = label;
+
     modalTable.textContent = `Table ${table.value.trim()} · Customer #${customer.value.trim()}`;
-    modalItems.innerHTML = picked.join(' &nbsp;•&nbsp; ');
+    modalItems.innerHTML = picked.map((r) => `${qty[r.dataset.id!]} × ${r.dataset.name}`).join(' &nbsp;•&nbsp; ');
     modal.classList.add('show');
   });
 

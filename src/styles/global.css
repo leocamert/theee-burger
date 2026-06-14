@@ -332,3 +332,21 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppe
 .info-list .v { color: var(--cream); }
 .map-frame { border-radius: 18px; overflow: hidden; border: 1px solid var(--line-soft); aspect-ratio: 16/10; background: var(--ink-2); }
 .map-frame iframe { width: 100%; height: 100%; border: 0; filter: grayscale(0.3) invert(0.9) hue-rotate(180deg); }
+
+/* careers link in the header (top-right) */
+.mast-careers { position: absolute; top: 24px; right: 26px; font-family: var(--sans); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); transition: color .18s ease; }
+.mast-careers:hover { color: var(--cream); }
+@media (max-width: 600px) { .mast-careers { top: 14px; right: 14px; font-size: 10.5px; letter-spacing: .1em; } }
+
+/* careers / application form */
+.apply-card { background: var(--ink-2); border: 1px solid var(--line-soft); border-radius: 18px; padding: clamp(22px, 4vw, 36px); }
+.form-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+@media (max-width: 540px) { .form-2 { grid-template-columns: 1fr; } }
+.field select, .field textarea { width: 100%; background: var(--ink-2); border: 1px solid var(--line); color: var(--cream); border-radius: 12px; padding: 14px 16px; font-size: 16px; font-family: var(--sans); transition: border-color .2s ease; }
+.field select:focus, .field textarea:focus { outline: none; border-color: var(--red); }
+.field textarea { resize: vertical; }
+.field input[type="file"] { background: var(--ink-2); border: 1px dashed var(--line); color: var(--muted); font-size: 14px; cursor: pointer; padding: 13px 16px; }
+.field input[type="file"]::file-selector-button { background: var(--ink-3); color: var(--cream); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; margin-right: 14px; cursor: pointer; font-family: var(--sans); font-size: 13px; }
+.apply-status { color: var(--red); font-size: 14px; min-height: 18px; margin-bottom: 6px; }
+.apply-done { display: none; text-align: center; padding: 12px 0 16px; }
+.apply-done h3 { font-size: 28px; margin-bottom: 8px; }

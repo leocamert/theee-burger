@@ -1,0 +1,13 @@
+name = "theee-burger"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "dist"
+
+# Orders + careers applications
+[[d1_databases]]
+binding = "DB"
+database_name = "theee-burger-db"
+database_id = "2e6e0174-f7f4-4e42-8be1-f9f926a73db8"
+
+# KITCHEN_PASSWORD is set as an encrypted secret (not stored here):
+#   npx wrangler pages secret put KITCHEN_PASSWORD --project-name theee-burger
+# For local dev it is read from .dev.vars
