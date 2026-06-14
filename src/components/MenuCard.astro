@@ -1,5 +1,5 @@
 ---
-interface Item { id?: string; name: string; price: number; desc: string; image: string; tag?: string; }
+interface Item { id?: string; name: string; price: number; desc: string; image: string; tag?: string; diet?: string[]; }
 const { item, orderable = false } = Astro.props as { item: Item; orderable?: boolean };
 ---
 <article class="card reveal">
@@ -10,7 +10,12 @@ const { item, orderable = false } = Astro.props as { item: Item; orderable?: boo
       <span class="card__price">${item.price.toFixed(2)}</span>
     </div>
     <p class="card__desc">{item.desc}</p>
-    {item.tag && <span class="card__tag">{item.tag}</span>}
+    {(item.tag || (item.diet && item.diet.length > 0)) && (
+      <div class="card__tags">
+        {item.tag && <span class="card__tag">{item.tag}</span>}
+        {item.diet && item.diet.map((d) => <span class="diet-tag">{d}</span>)}
+      </div>
+    )}
     {orderable && item.id && (
       <div class="cart-stepper" data-id={item.id} data-name={item.name} data-price={item.price}>
         <button type="button" class="cdec" aria-label={`Remove one ${item.name}`} disabled>&minus;</button>

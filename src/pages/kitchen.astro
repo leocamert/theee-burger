@@ -95,6 +95,10 @@ import '../styles/global.css';
       .kitems { list-style: none; margin: 12px 0; padding: 0; }
       .kitems li { padding: 4px 0; border-bottom: 1px solid var(--line-soft); font-size: 15px; }
       .kitems li:last-child { border-bottom: 0; }
+      .kitems .kx { color: var(--flame); font-size: 13px; }
+      .knote { color: var(--muted); font-size: 13px; font-style: italic; margin-top: 2px; }
+      .korder-note { background: rgba(255,122,24,.1); border: 1px solid rgba(255,122,24,.3); border-radius: 8px; padding: 8px 10px; font-size: 13px; color: var(--cream); margin: 0 0 10px; }
+      .korder-note strong { color: var(--flame); }
       .kstatuschip { display: inline-block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
       .chip-new { background: rgba(228,19,28,.16); color: #ff9a9a; }
       .chip-preparing { background: rgba(255,122,24,.16); color: var(--flame); }
@@ -182,7 +186,12 @@ import '../styles/global.css';
         grid.innerHTML = orders.map((o: any) => {
           ids.add(o.id);
           if (!firstLoad && !knownIds.has(o.id) && o.status === 'new') isNew = true;
-          const items = (o.items || []).map((i: any) => `<li>${i.qty} × ${esc(i.name)}</li>`).join('');
+          const items = (o.items || []).map((i: any) => {
+            const ex = (i.extras && i.extras.length) ? ` <span class="kx">+ ${i.extras.map((e: any) => esc(e.name)).join(', ')}</span>` : '';
+            const nt = i.note ? `<div class="knote">“${esc(i.note)}”</div>` : '';
+            return `<li>${i.qty} × ${esc(i.name)}${ex}${nt}</li>`;
+          }).join('');
+          const onote = o.notes ? `<div class="korder-note"><strong>Note:</strong> ${esc(o.notes)}</div>` : '';
           const chip = `<span class="kstatuschip chip-${o.status}">${o.status}</span>`;
           const acts = o.status === 'served' ? '' :
             `<div class="kactions">
@@ -190,8 +199,8 @@ import '../styles/global.css';
                <button data-id="${o.id}" data-act="served">Served</button>
              </div>`;
           return `<div class="kcard s-${o.status} ${!firstLoad && !knownIds.has(o.id) ? 'flash' : ''}" data-id="${o.id}">
-            <div class="kcard__top"><span class="ktable">Table ${esc(o.table_number)}</span><span class="kcust">#${esc(o.customer_number)}</span><span class="ktime">${ago(o.created_at)}</span></div>
-            <ul class="kitems">${items}</ul>
+            <div class="kcard__top"><span class="ktable">Table ${esc(o.table_number)}</span><span class="kcust">#${esc(o.customer_number)}</span><span class="ktime">#${o.id} · ${ago(o.created_at)}</span></div>
+            <ul class="kitems">${items}</ul>${onote}
             <div class="kcard__bot"><span class="ktotal">$${Number(o.total).toFixed(2)}${chip}</span>${acts}</div>
           </div>`;
         }).join('');

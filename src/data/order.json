@@ -9,6 +9,16 @@
   "tablePlaceholder": "e.g. 12",
   "submitLabel": "Send order to the kitchen",
   "noPaymentNote": "No online payment — your check will be brought to your table.",
+  "extrasLabel": "Add extras",
+  "extras": [
+    { "id": "extra-patty", "name": "Extra patty", "price": 4.5 },
+    { "id": "add-bacon", "name": "Add bacon", "price": 3.0 },
+    { "id": "extra-cheese", "name": "Extra cheese", "price": 1.5 },
+    { "id": "add-avocado", "name": "Add avocado", "price": 2.0 }
+  ],
+  "itemNotePlaceholder": "Modifications — e.g. no onions, well done…",
+  "specialLabel": "Special requests / allergies",
+  "specialPlaceholder": "Anything we should know? Allergies, etc. (optional)",
   "items": [
     { "id": "classic", "name": "The Classic", "price": 22.0, "category": "Burgers" },
     { "id": "bacon", "name": "Bacon Stack", "price": 25.0, "category": "Burgers" },

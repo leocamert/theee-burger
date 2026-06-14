@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS orders (
   items TEXT NOT NULL,                       -- JSON: [{id,name,qty,price}]
   total REAL NOT NULL,
   status TEXT NOT NULL DEFAULT 'new',        -- new | preparing | served
+  notes TEXT,                                -- order-level special requests
   created_at TEXT NOT NULL                   -- ISO 8601
 );
 CREATE INDEX IF NOT EXISTS idx_orders_created ON orders (created_at DESC);

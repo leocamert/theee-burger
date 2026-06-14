@@ -28,23 +28,44 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
             <label for="table">{order.tableLabel}</label>
             <input id="table" name="table" type="text" inputmode="numeric" placeholder={order.tablePlaceholder} autocomplete="off" />
           </div>
+          <div class="field">
+            <label for="special">{order.specialLabel}</label>
+            <textarea id="special" rows="2" placeholder={order.specialPlaceholder} maxlength="500"></textarea>
+          </div>
 
           <div id="items" style="margin-top:10px;">
             {cats.map((cat) => (
               <div>
                 <div class="cat-label">{cat}</div>
                 {order.items.filter((i) => i.category === cat).map((i) => (
-                  <div class="order-item" data-id={i.id} data-name={i.name} data-price={i.price}>
-                    <div class="order-item__info">
-                      <div class="order-item__name">{i.name}</div>
-                      <div class="order-item__price">${i.price.toFixed(2)}</div>
+                  <>
+                    <div class="order-item" data-id={i.id} data-name={i.name} data-price={i.price} data-cat={i.category}>
+                      <div class="order-item__info">
+                        <div class="order-item__name">{i.name}</div>
+                        <div class="order-item__price">${i.price.toFixed(2)}</div>
+                        {i.category === 'Burgers' && <button type="button" class="customize-toggle" data-for={i.id} aria-expanded="false">Customize</button>}
+                      </div>
+                      <div class="stepper">
+                        <button type="button" class="dec" aria-label={`Remove one ${i.name}`} disabled>&minus;</button>
+                        <span class="qty">0</span>
+                        <button type="button" class="inc" aria-label={`Add one ${i.name}`}>+</button>
+                      </div>
                     </div>
-                    <div class="stepper">
-                      <button type="button" class="dec" aria-label={`Remove one ${i.name}`} disabled>&minus;</button>
-                      <span class="qty">0</span>
-                      <button type="button" class="inc" aria-label={`Add one ${i.name}`}>+</button>
-                    </div>
-                  </div>
+                    {i.category === 'Burgers' && (
+                      <div class="customize-panel" data-for={i.id} hidden>
+                        <div class="extras-label">{order.extrasLabel}</div>
+                        <div class="extras">
+                          {order.extras.map((x) => (
+                            <label class="extra-opt">
+                              <input type="checkbox" class="extra" data-extra-name={x.name} data-extra-price={x.price} />
+                              <span>{x.name}</span><span class="extra-price">+${x.price.toFixed(2)}</span>
+                            </label>
+                          ))}
+                        </div>
+                        <input type="text" class="item-note" placeholder={order.itemNotePlaceholder} maxlength="200" />
+                      </div>
+                    )}
+                  </>
                 ))}
               </div>
             ))}
@@ -71,6 +92,7 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
     <div class="modal__card">
       <div class="modal__check" aria-hidden="true">&#10003;</div>
       <h3 id="modalTitle">Order sent!</h3>
+      <p class="modal__orderno" id="modalOrderNo"></p>
       <p>Your order is on its way to the kitchen.</p>
       <p class="tbl" id="modalTable"></p>
       <p class="muted" id="modalItems" style="font-size:14px; margin-top:14px;"></p>
@@ -86,13 +108,25 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
   const placeBtn = document.getElementById('placeBtn')!;
   const customer = document.getElementById('customer') as HTMLInputElement;
   const table = document.getElementById('table') as HTMLInputElement;
+  const special = document.getElementById('special') as HTMLTextAreaElement;
   const modal = document.getElementById('orderModal')!;
   const modalClose = document.getElementById('modalClose')!;
   const modalTable = document.getElementById('modalTable')!;
   const modalItems = document.getElementById('modalItems')!;
+  const modalOrderNo = document.getElementById('modalOrderNo')!;
 
   const qty: Record<string, number> = {};
   const fmt = (n: number) => '$' + n.toFixed(2);
+
+  function getCustom(id: string) {
+    const panel = document.querySelector(`.customize-panel[data-for="${id}"]`);
+    if (!panel) return { extras: [] as { name: string; price: number }[], note: '' };
+    const extras = Array.from(panel.querySelectorAll('.extra:checked')).map((c) => ({
+      name: (c as HTMLElement).dataset.extraName!, price: parseFloat((c as HTMLElement).dataset.extraPrice!),
+    }));
+    const note = (panel.querySelector('.item-note') as HTMLInputElement).value.trim();
+    return { extras, note };
+  }
 
   // Shared cart from the Menu page
   const KEY = 'tb_cart';
@@ -110,14 +144,17 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
     for (const row of items) {
       const id = row.dataset.id!;
       const n = qty[id] || 0;
-      const price = parseFloat(row.dataset.price!);
+      const base = parseFloat(row.dataset.price!);
       const name = row.dataset.name!;
+      const { extras } = getCustom(id);
+      const linePrice = base + extras.reduce((a, e) => a + e.price, 0);
       row.classList.toggle('active', n > 0);
       (row.querySelector('.dec') as HTMLButtonElement).disabled = n === 0;
       (row.querySelector('.qty') as HTMLElement).textContent = String(n);
       if (n > 0) {
-        total += n * price;
-        lines.push(`<div class="summary__line"><span>${n} × ${name}</span><span>${fmt(n * price)}</span></div>`);
+        total += n * linePrice;
+        const ex = extras.length ? ` <span class="sum-ex">+ ${extras.map((e) => e.name).join(', ')}</span>` : '';
+        lines.push(`<div class="summary__line"><span>${n} × ${name}${ex}</span><span>${fmt(n * linePrice)}</span></div>`);
       }
     }
     sumLines.innerHTML = lines.length ? lines.join('') : '<div class="summary__empty">Nothing added yet — tap + to start your order.</div>';
@@ -130,6 +167,18 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
     row.querySelector('.inc')!.addEventListener('click', () => { qty[id] = Math.min(99, (qty[id] || 0) + 1); refresh(); persist(); });
     row.querySelector('.dec')!.addEventListener('click', () => { qty[id] = Math.max(0, (qty[id] || 0) - 1); refresh(); persist(); });
   }
+
+  // customize toggles + extras
+  document.querySelectorAll('.customize-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const panel = document.querySelector(`.customize-panel[data-for="${(btn as HTMLElement).dataset.for}"]`) as HTMLElement;
+      const open = panel.hasAttribute('hidden');
+      if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
+      btn.setAttribute('aria-expanded', String(open));
+      btn.classList.toggle('on', open);
+    });
+  });
+  document.querySelectorAll('.customize-panel .extra').forEach((c) => c.addEventListener('change', refresh));
 
   function validateField(el: HTMLInputElement) {
     const ok = el.value.trim().length > 0;
@@ -147,32 +196,48 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
     if (count === 0) { placeBtn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 280 }); return; }
 
     const picked = items.filter((r) => (qty[r.dataset.id!] || 0) > 0);
-    const payloadItems = picked.map((r) => ({ id: r.dataset.id, name: r.dataset.name, qty: qty[r.dataset.id!], price: parseFloat(r.dataset.price!) }));
+    const payloadItems = picked.map((r) => {
+      const id = r.dataset.id!;
+      const { extras, note } = getCustom(id);
+      return { id, name: r.dataset.name, qty: qty[id], price: parseFloat(r.dataset.price!), extras, note };
+    });
 
     const label = placeBtn.textContent;
     placeBtn.setAttribute('disabled', 'true');
     placeBtn.textContent = 'Sending…';
+    let orderId: number | null = null;
     try {
-      await fetch('/api/order', {
+      const res = await fetch('/api/order', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ table: table.value.trim(), customer: customer.value.trim(), items: payloadItems }),
+        body: JSON.stringify({ table: table.value.trim(), customer: customer.value.trim(), items: payloadItems, notes: special.value.trim() }),
       });
+      const data = await res.json().catch(() => ({}));
+      if (data && data.id) orderId = data.id;
     } catch (e) {
       // Offline / not yet deployed — still confirm so the guest isn't left hanging
     }
     placeBtn.removeAttribute('disabled');
     placeBtn.textContent = label;
 
+    modalOrderNo.textContent = orderId ? `Order #${orderId}` : '';
     modalTable.textContent = `Table ${table.value.trim()} · Customer #${customer.value.trim()}`;
-    modalItems.innerHTML = picked.map((r) => `${qty[r.dataset.id!]} × ${r.dataset.name}`).join(' &nbsp;•&nbsp; ');
+    modalItems.innerHTML = picked.map((r) => {
+      const { extras } = getCustom(r.dataset.id!);
+      const ex = extras.length ? ` (+${extras.map((e) => e.name).join(', ')})` : '';
+      return `${qty[r.dataset.id!]} × ${r.dataset.name}${ex}`;
+    }).join(' &nbsp;•&nbsp; ');
     modal.classList.add('show');
   });
 
   modalClose.addEventListener('click', () => {
     modal.classList.remove('show');
     for (const k in qty) qty[k] = 0;
-    customer.value = ''; table.value = '';
+    customer.value = ''; table.value = ''; special.value = '';
+    document.querySelectorAll('.customize-panel .extra').forEach((c) => ((c as HTMLInputElement).checked = false));
+    document.querySelectorAll('.item-note').forEach((n) => ((n as HTMLInputElement).value = ''));
+    document.querySelectorAll('.customize-panel').forEach((p) => p.setAttribute('hidden', ''));
+    document.querySelectorAll('.customize-toggle').forEach((b) => b.classList.remove('on'));
     sessionStorage.removeItem(KEY);
     refresh();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -181,3 +246,4 @@ for (const it of order.items) if (!cats.includes(it.category)) cats.push(it.cate
 
   refresh();
 </script>
+</Base>
