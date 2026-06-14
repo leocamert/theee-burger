@@ -31,10 +31,10 @@ import '../styles/global.css';
         <div class="ktop__brand">TH<span>EEE</span> BURGER · Kitchen</div>
         <div class="ktop__tabs">
           <button data-tab="orders" class="ktab active" id="tabOrders">Orders <span id="orderCount" class="kbadge">0</span></button>
+          <button data-tab="history" class="ktab" id="tabHistory">History</button>
           <button data-tab="apps" class="ktab" id="tabApps">Applications</button>
         </div>
         <div class="ktop__right">
-          <label class="ktoggle"><input type="checkbox" id="showServed" /> Show served</label>
           <button id="logout" class="kbtn-ghost">Log out</button>
         </div>
       </header>
@@ -42,6 +42,12 @@ import '../styles/global.css';
       <main id="ordersView" class="kview">
         <div id="ordersGrid" class="kgrid"></div>
         <p id="ordersEmpty" class="kempty">No active orders. New ones land here automatically.</p>
+      </main>
+
+      <main id="historyView" class="kview" hidden>
+        <div class="khist__bar"><div id="histSummary" class="khist__summary"></div></div>
+        <div id="histList" class="khist"></div>
+        <p id="histEmpty" class="kempty">No past orders yet.</p>
       </main>
 
       <main id="appsView" class="kview" hidden>
@@ -110,6 +116,22 @@ import '../styles/global.css';
       .kapp__resume { margin-top: 12px; }
       .kapp__resume button { border: 1px solid var(--line); background: transparent; color: var(--cream); padding: 8px 16px; border-radius: 999px; cursor: pointer; font-size: 13px; }
       .kapp__resume button:hover { border-color: var(--flame); color: var(--flame); }
+
+      .khist__bar { margin-bottom: 16px; }
+      .khist__summary { color: var(--muted); font-size: 14px; letter-spacing: .02em; }
+      .khist { display: flex; flex-direction: column; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; }
+      .khrow { display: grid; grid-template-columns: 140px 160px 1fr 90px 110px; gap: 12px; align-items: center; background: var(--ink-2); padding: 12px 16px; font-size: 14px; }
+      .khrow__when { color: var(--muted); white-space: nowrap; }
+      .khrow__tbl { font-weight: 500; }
+      .khrow__items { color: var(--muted); }
+      .khrow__total { font-family: var(--display); color: var(--red); text-align: right; }
+      .khrow__status { text-align: right; }
+      @media (max-width: 760px) {
+        .khrow { grid-template-columns: 1fr auto; row-gap: 4px; }
+        .khrow__items { grid-column: 1 / -1; }
+        .khrow__total { text-align: left; }
+        .khrow__status { text-align: right; }
+      }
     </style>
 
     <script>
@@ -147,14 +169,12 @@ import '../styles/global.css';
       }
 
       async function loadOrders() {
-        const showServed = (document.getElementById('showServed') as HTMLInputElement).checked;
-        const res = await fetch('/api/orders' + (showServed ? '?all=1' : ''), { headers: headers() });
+        const res = await fetch('/api/orders', { headers: headers() });
         if (res.status === 401) { logout(); return; }
         const data = await res.json();
         const orders = data.orders || [];
         const grid = document.getElementById('ordersGrid')!;
-        const active = orders.filter((o: any) => o.status !== 'served');
-        document.getElementById('orderCount')!.textContent = String(active.length);
+        document.getElementById('orderCount')!.textContent = String(orders.length);
         document.getElementById('ordersEmpty')!.style.display = orders.length ? 'none' : 'block';
 
         let isNew = false;
@@ -216,12 +236,33 @@ import '../styles/global.css';
         });
       }
 
+      async function loadHistory() {
+        const res = await fetch('/api/orders?history=1', { headers: headers() });
+        if (res.status === 401) { logout(); return; }
+        const data = await res.json();
+        const orders = data.orders || [];
+        document.getElementById('histEmpty')!.style.display = orders.length ? 'none' : 'block';
+        const revenue = orders.reduce((s: number, o: any) => s + Number(o.total || 0), 0);
+        document.getElementById('histSummary')!.textContent =
+          `${orders.length} order${orders.length === 1 ? '' : 's'} · $${revenue.toFixed(2)} · last 365 days`;
+        document.getElementById('histList')!.innerHTML = orders.map((o: any) => {
+          const items = (o.items || []).map((i: any) => `${i.qty}× ${esc(i.name)}`).join(', ');
+          const when = new Date(o.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+          return `<div class="khrow">
+            <div class="khrow__when">${when}</div>
+            <div class="khrow__tbl">Table ${esc(o.table_number)} <span class="kcust">#${esc(o.customer_number)}</span></div>
+            <div class="khrow__items">${items}</div>
+            <div class="khrow__total">$${Number(o.total).toFixed(2)}</div>
+            <div class="khrow__status"><span class="kstatuschip chip-${o.status}">${o.status}</span></div>
+          </div>`;
+        }).join('');
+      }
+
       function startPolling() {
         loadOrders();
         clearInterval(timer);
         timer = setInterval(() => {
-          if (!(document.getElementById('appsView') as HTMLElement).hidden) loadApps();
-          else loadOrders();
+          if (!(document.getElementById('ordersView') as HTMLElement).hidden) loadOrders();
         }, 5000);
       }
 
@@ -237,17 +278,18 @@ import '../styles/global.css';
       }
 
       // tabs
-      document.getElementById('tabOrders')!.addEventListener('click', () => switchTab('orders'));
-      document.getElementById('tabApps')!.addEventListener('click', () => switchTab('apps'));
+      const TABS = ['orders', 'history', 'apps'];
+      const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+      TABS.forEach((name) => document.getElementById('tab' + cap(name))!.addEventListener('click', () => switchTab(name)));
       function switchTab(t: string) {
-        const orders = t === 'orders';
-        document.getElementById('tabOrders')!.classList.toggle('active', orders);
-        document.getElementById('tabApps')!.classList.toggle('active', !orders);
-        (document.getElementById('ordersView') as HTMLElement).hidden = !orders;
-        (document.getElementById('appsView') as HTMLElement).hidden = orders;
-        if (orders) loadOrders(); else loadApps();
+        TABS.forEach((name) => {
+          document.getElementById('tab' + cap(name))!.classList.toggle('active', name === t);
+          (document.getElementById(name + 'View') as HTMLElement).hidden = name !== t;
+        });
+        if (t === 'orders') loadOrders();
+        else if (t === 'history') loadHistory();
+        else loadApps();
       }
-      document.getElementById('showServed')!.addEventListener('change', loadOrders);
       document.getElementById('logout')!.addEventListener('click', logout);
 
       gateForm.addEventListener('submit', async (e) => {
