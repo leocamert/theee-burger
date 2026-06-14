@@ -3,8 +3,10 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-interface Props { title?: string; description?: string; }
-const { title = 'THEEE BURGER', description = 'Flame-grilled, hand-pressed burgers in San Jose. Burger? Right here.' } = Astro.props;
+interface Props { title?: string; description?: string; ogImage?: string; }
+const { title = 'THEEE BURGER', description = 'Flame-grilled, hand-pressed burgers in San Jose. Burger? Right here.', ogImage = '/images/home-hero.jpg' } = Astro.props;
+const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://theee-burger.pages.dev').href;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://theee-burger.pages.dev').href;
 ---
 <!doctype html>
 <html lang="en">
@@ -17,6 +19,14 @@ const { title = 'THEEE BURGER', description = 'Flame-grilled, hand-pressed burge
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1900" />
+    <meta property="og:image:height" content="1060" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
