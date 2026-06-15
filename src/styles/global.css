@@ -127,7 +127,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppe
 @media (max-width: 720px) { .topbar__nav a:not(.btn) { display: none; } }
 
 /* ---------- hero scroll-open burger ---------- */
-.hero { height: 360vh; position: relative; }
+.hero { height: 320vh; position: relative; }
+@media (max-width: 600px) { .hero { height: 305vh; } } /* slightly faster slide on mobile */
 .hero__stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .hero__glow { position: absolute; width: 75vmin; height: 75vmin; border-radius: 50%; background: radial-gradient(circle, rgba(228,19,28,0.22), rgba(255,122,24,0.10) 40%, transparent 66%); filter: blur(10px); z-index: 1; }
 .hero__scrim { position: absolute; inset: 0; z-index: 11; pointer-events: none;
