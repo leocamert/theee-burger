@@ -39,9 +39,19 @@ export async function onRequestPost(context) {
   const file = form.get('resume');
   if (file && typeof file === 'object' && file.size) {
     if (file.size > MAX_BYTES) return json({ error: 'Résumé must be under 4 MB.' }, 400);
-    if (file.type && !OK_TYPES.includes(file.type)) return json({ error: 'Résumé must be a PDF or Word document.' }, 400);
+    const rawName = String(file.name || 'resume').slice(0, 160);
+    const ext = rawName.split('.').pop().toLowerCase();
+    const allowedExts = ['pdf', 'doc', 'docx'];
+    
+    const mimeOk = file.type && OK_TYPES.includes(file.type);
+    const extOk = allowedExts.includes(ext);
+    
+    if (!mimeOk && !extOk) {
+      return json({ error: 'Résumé must be a PDF or Word document.' }, 400);
+    }
+    
     const buf = await file.arrayBuffer();
-    resumeName = String(file.name || 'resume').slice(0, 160);
+    resumeName = rawName;
     resumeType = file.type || 'application/octet-stream';
     resumeData = bufToBase64(buf);
   }
@@ -55,6 +65,7 @@ export async function onRequestPost(context) {
       .run();
     return json({ ok: true });
   } catch (e) {
+    console.error("Submission error:", e);
     return json({ error: 'Could not submit your application.' }, 500);
   }
 }

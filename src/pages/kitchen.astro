@@ -235,12 +235,27 @@ import '../styles/global.css';
         list.querySelectorAll('button[data-resume]').forEach((b) => {
           b.addEventListener('click', async () => {
             const id = (b as HTMLElement).dataset.resume; const nm = (b as HTMLElement).dataset.name || 'resume';
-            const r = await fetch('/api/resume/' + id, { headers: headers() });
-            if (!r.ok) return;
-            const blob = await r.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = nm; a.click();
-            setTimeout(() => URL.revokeObjectURL(url), 4000);
+            const originalLabel = b.textContent;
+            (b as HTMLButtonElement).disabled = true;
+            b.textContent = 'Downloading…';
+            try {
+              const r = await fetch('/api/resume/' + id, { headers: headers() });
+              if (!r.ok) {
+                const errData = await r.json().catch(() => ({}));
+                alert('Could not download résumé: ' + (errData.error || r.statusText));
+                (b as HTMLButtonElement).disabled = false;
+                b.textContent = originalLabel;
+                return;
+              }
+              const blob = await r.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a'); a.href = url; a.download = nm; a.click();
+              setTimeout(() => URL.revokeObjectURL(url), 4000);
+            } catch (err) {
+              alert('Network error downloading résumé.');
+            }
+            (b as HTMLButtonElement).disabled = false;
+            b.textContent = originalLabel;
           });
         });
       }
